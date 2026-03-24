@@ -1,0 +1,755 @@
+{
+  "info": {
+    "_postman_id": "9b5f657a-46be-41aa-95ea-934867c75cfb",
+    "name": "Vacanza",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51856841"
+  },
+  "item": [
+    {
+      "name": "Auth Routes",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Admin\",\r\n  \"lastName\": \"User\",\r\n  \"email\": \"admin2@test.com\",\r\n  \"password\": \"Admin@1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"john@test.com\",\r\n  \"password\": \"Test@1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vacations Routes",
+      "item": [
+        {
+          "name": "All Vacations",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJEb2UiLCJpYXQiOjE3NzM1NzYwNTAsImV4cCI6MTc3MzY2MjQ1MCwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.wN1FvZbuIez5HDFM93PkpcbYlVaWMEN0o6F_hPH1zJQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Like",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"john@test.com\",\r\n  \"password\": \"Test@123\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations/7/likes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations",
+                "7",
+                "likes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Like",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJEb2UiLCJpYXQiOjE3NzM1NzYwNTAsImV4cCI6MTc3MzY2MjQ1MCwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.wN1FvZbuIez5HDFM93PkpcbYlVaWMEN0o6F_hPH1zJQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"john@test.com\",\r\n  \"password\": \"Test@123\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations/1/likes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations",
+                "1",
+                "likes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Vacation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoiYWRtaW4yQHRlc3QuY29tIiwicm9sZSI6ImFkbWluIiwiZmlyc3ROYW1lIjoiQWRtaW4iLCJsYXN0TmFtZSI6IlVzZXIiLCJpYXQiOjE3NzM1NzY2MTYsImV4cCI6MTc3MzY2MzAxNiwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.IW3mys3j_J5noFL24V1lDpdKEofbLjEG3SHZG0pPBcM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "destination",
+                  "value": "Rome, Milan",
+                  "type": "text",
+                  "uuid": "deae0a3c-ea61-4011-8f23-778ac8ed9d83"
+                },
+                {
+                  "key": "description",
+                  "value": "Walk through history — the Colosseum and Vatican City await.",
+                  "type": "text",
+                  "uuid": "0740acb0-5981-4222-b789-1fc495c24901"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2027-06-01",
+                  "type": "text",
+                  "uuid": "a5850851-554b-4b9f-bf9b-d1f64fa2d47c"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2027-06-15",
+                  "type": "text",
+                  "uuid": "bb764da5-15f6-4705-8035-c69562c005eb"
+                },
+                {
+                  "key": "price",
+                  "value": "555",
+                  "type": "text",
+                  "uuid": "ae4795c8-d0a3-47f9-85ee-cee78f72e74f"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "c8276132-e779-4708-ad7c-138804be782f",
+                  "src": "postman-cloud:///1f120450-38c3-4ab0-ac6b-bfcb642dbf41"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Vacation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoiYWRtaW4yQHRlc3QuY29tIiwicm9sZSI6ImFkbWluIiwiZmlyc3ROYW1lIjoiQWRtaW4iLCJsYXN0TmFtZSI6IlVzZXIiLCJpYXQiOjE3NzM1NzY2MTYsImV4cCI6MTc3MzY2MzAxNiwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.IW3mys3j_J5noFL24V1lDpdKEofbLjEG3SHZG0pPBcM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "destination",
+                  "value": "Rome , Italy (updated twice)",
+                  "type": "text",
+                  "uuid": "7420f409-2ec7-49b9-ad06-8aabaec04e23"
+                },
+                {
+                  "key": "description",
+                  "value": "walk in italy",
+                  "type": "text",
+                  "uuid": "926dac88-6f6d-43cf-93e5-d07944df2d4a"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2027-06-01",
+                  "type": "text",
+                  "uuid": "a00ee959-1f3e-4f5f-ab66-27a58d095f6e"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2027-06-15",
+                  "type": "text",
+                  "uuid": "ef173b14-87a8-4e08-bd7e-7d04f2e0c45f"
+                },
+                {
+                  "key": "price",
+                  "value": "669",
+                  "type": "text",
+                  "uuid": "cbb39913-1006-4737-b857-2384ecac1b0c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations/10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Vacation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoiYWRtaW4yQHRlc3QuY29tIiwicm9sZSI6ImFkbWluIiwiZmlyc3ROYW1lIjoiQWRtaW4iLCJsYXN0TmFtZSI6IlVzZXIiLCJpYXQiOjE3NzM1NzY2MTYsImV4cCI6MTc3MzY2MzAxNiwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.IW3mys3j_J5noFL24V1lDpdKEofbLjEG3SHZG0pPBcM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "destination",
+                  "value": "Rome , Italy (updated)",
+                  "type": "text",
+                  "uuid": "7420f409-2ec7-49b9-ad06-8aabaec04e23"
+                },
+                {
+                  "key": "description",
+                  "value": "walk in italy",
+                  "type": "text",
+                  "uuid": "926dac88-6f6d-43cf-93e5-d07944df2d4a"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2027-06-01",
+                  "type": "text",
+                  "uuid": "a00ee959-1f3e-4f5f-ab66-27a58d095f6e"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2027-06-15",
+                  "type": "text",
+                  "uuid": "ef173b14-87a8-4e08-bd7e-7d04f2e0c45f"
+                },
+                {
+                  "key": "price",
+                  "value": "9000",
+                  "type": "text",
+                  "uuid": "cbb39913-1006-4737-b857-2384ecac1b0c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/vacations/10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "vacations",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "User Profile",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImVtYWlsIjoiYWRtaW4yQHRlc3QuY29tIiwicm9sZSI6ImFkbWluIiwiZmlyc3ROYW1lIjoiQWRtaW4iLCJsYXN0TmFtZSI6IlVzZXIiLCJpYXQiOjE3NzM1NzY2MTYsImV4cCI6MTc3MzY2MzAxNiwiYXVkIjoidmFjYW56YS1hcHAiLCJpc3MiOiJ2YWNhbnphLWFwaSJ9.IW3mys3j_J5noFL24V1lDpdKEofbLjEG3SHZG0pPBcM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "destination",
+                  "value": "Rome , Italy (updated)",
+                  "type": "text",
+                  "uuid": "7420f409-2ec7-49b9-ad06-8aabaec04e23"
+                },
+                {
+                  "key": "description",
+                  "value": "walk in italy",
+                  "type": "text",
+                  "uuid": "926dac88-6f6d-43cf-93e5-d07944df2d4a"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2027-06-01",
+                  "type": "text",
+                  "uuid": "a00ee959-1f3e-4f5f-ab66-27a58d095f6e"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2027-06-15",
+                  "type": "text",
+                  "uuid": "ef173b14-87a8-4e08-bd7e-7d04f2e0c45f"
+                },
+                {
+                  "key": "price",
+                  "value": "9000",
+                  "type": "text",
+                  "uuid": "cbb39913-1006-4737-b857-2384ecac1b0c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzI4MSwiZXhwIjoxNzczNjYzNjgxLCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.GVXUeBPauPcETjoSdqTycsc5IogG6uLDmj5vZzZEb6Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Smith\",\r\n  \"email\": \"john.smith@test.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currentPassword\": \"Test@1234\",\r\n  \"newPassword\": \"NewPass@5678\",\r\n  \"confirmPassword\": \"NewPass@5678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me/password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Likes",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currentPassword\": \"Test@1234\",\r\n  \"newPassword\": \"NewPass@5678\",\r\n  \"confirmPassword\": \"NewPass@5678\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me/likes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me",
+                "likes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Profile Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "284a981c-32dd-4c12-9765-a500774cdad0",
+                  "src": "postman-cloud:///1f120450-38c3-4ab0-ac6b-bfcb642dbf41"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me/avatar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "284a981c-32dd-4c12-9765-a500774cdad0",
+                  "src": "postman-cloud:///1f120450-38c3-4ab0-ac6b-bfcb642dbf41"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Get Recommendation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"destination\": \"Paris, France\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/recommendations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MCP Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJqb2huLnNtaXRoQHRlc3QuY29tIiwicm9sZSI6InVzZXIiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJTbWl0aCIsImlhdCI6MTc3MzU3NzM3NiwiZXhwIjoxNzczNjYzNzc2LCJhdWQiOiJ2YWNhbnphLWFwcCIsImlzcyI6InZhY2FuemEtYXBpIn0.2yk3wAa_W0ChvWwhf_UaNcO9HkLIcoCKvETyGNRMDUw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"question\": \"What is the average price of all vacations?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/mcp/ask",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "mcp",
+                "ask"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

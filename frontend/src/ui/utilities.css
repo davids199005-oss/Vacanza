@@ -1,0 +1,137 @@
+.glass-surface {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+}
+
+.accent-gradient-text {
+  background: linear-gradient(120deg, #7f8ea6 2%, var(--accent-highlight) 36%, var(--accent-solid) 60%, #8ea7c5 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.primary-gradient-button {
+  border: 0;
+  color: var(--text-inverse);
+  background: linear-gradient(130deg, var(--accent-start) 0%, var(--accent-end) 100%);
+  box-shadow: 0 10px 28px var(--accent-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.primary-gradient-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px var(--accent-glow);
+  filter: brightness(1.07);
+}
+
+.primary-gradient-button:active {
+  transform: translateY(0);
+}
+
+.ghost-dark-button {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.ghost-dark-button:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-elevated);
+}
+
+.file-input-styled {
+  cursor: pointer;
+}
+
+.file-input-styled::file-selector-button {
+  margin-right: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.file-input-styled::file-selector-button:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-elevated);
+}
+
+.file-input-styled::-webkit-file-upload-button {
+  margin-right: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.file-input-styled::-webkit-file-upload-button:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-elevated);
+}
+
+.page-content {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+}
+
+.app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(125deg, rgba(201, 164, 111, 0.12), transparent 28%),
+    linear-gradient(305deg, rgba(125, 152, 182, 0.12), transparent 32%),
+    linear-gradient(200deg, rgba(104, 125, 151, 0.1), transparent 40%);
+}
+
+.markdown-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75em;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.markdown-content a {
+  color: var(--link-accent);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+

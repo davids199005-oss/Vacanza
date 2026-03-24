@@ -1,0 +1,79 @@
+:root {
+  --bg-base: #0d1117;
+  --bg-surface: rgba(18, 24, 32, 0.82);
+  --bg-elevated: rgba(25, 32, 42, 0.96);
+  --bg-muted: rgba(31, 39, 51, 0.9);
+  --bg-soft: rgba(41, 50, 64, 0.62);
+
+  --text-primary: rgba(236, 241, 247, 0.96);
+  --text-secondary: rgba(184, 197, 215, 0.82);
+  --text-tertiary: rgba(146, 160, 178, 0.68);
+  --text-inverse: #0f1319;
+
+  --border-soft: rgba(136, 151, 173, 0.28);
+  --border-strong: rgba(166, 181, 203, 0.48);
+  --border-accent: rgba(198, 165, 109, 0.52);
+
+  --accent-start: #e0c38f;
+  --accent-end: #b28955;
+  --accent-solid: #c9a46f;
+  --accent-highlight: #f2d7ac;
+  --link-accent: #d9ba81;
+  --accent-glow: rgba(201, 164, 111, 0.34);
+
+  --success-accent: #63b59a;
+  --danger-accent: #d56a71;
+
+  --overlay-dark: rgba(8, 11, 15, 0.58);
+  --overlay-soft: rgba(12, 16, 24, 0.42);
+  --auth-overlay-start: rgba(8, 11, 15, 0.72);
+  --auth-overlay-end: rgba(13, 18, 27, 0.84);
+  --hero-title: #f7f2e7;
+  --hero-meta: rgba(236, 224, 205, 0.9);
+
+  --chart-grid: rgba(136, 151, 173, 0.3);
+  --chart-tick: rgba(184, 197, 215, 0.82);
+  --chart-cursor: rgba(201, 164, 111, 0.16);
+  --chart-tooltip-bg: rgba(22, 29, 38, 0.98);
+  --chart-tooltip-border: rgba(198, 165, 109, 0.42);
+  --chart-tooltip-text: rgba(236, 241, 247, 0.96);
+
+  --status-completed-bg: rgba(213, 106, 113, 0.2);
+  --status-completed-text: #f2b0b6;
+  --status-active-bg: rgba(99, 181, 154, 0.22);
+  --status-active-text: #9de2cc;
+  --status-upcoming-bg: rgba(201, 164, 111, 0.25);
+  --status-upcoming-text: #f1d5a7;
+
+  --landing-noise: rgba(140, 160, 190, 0.26);
+  --landing-overlay-1: rgba(201, 164, 111, 0.32);
+  --landing-overlay-2: rgba(124, 150, 182, 0.28);
+  --landing-overlay-3: rgba(12, 18, 27, 0.82);
+  --landing-orb-warm: rgba(201, 164, 111, 0.38);
+  --landing-orb-cool: rgba(125, 152, 182, 0.34);
+  --landing-pill-bg: rgba(20, 27, 37, 0.72);
+  --landing-pill-shimmer: rgba(241, 230, 213, 0.3);
+  --landing-card-bg-start: rgba(26, 34, 45, 0.92);
+  --landing-card-bg-end: rgba(20, 27, 36, 0.86);
+  --landing-card-accent: rgba(201, 164, 111, 0.22);
+  --landing-scroll-border: rgba(146, 160, 178, 0.48);
+  --landing-scroll-dot: rgba(184, 197, 215, 0.6);
+  --landing-gallery-overlay-top: rgba(17, 23, 33, 0.06);
+  --landing-gallery-overlay-bottom: rgba(8, 11, 15, 0.7);
+  --landing-gallery-shimmer: rgba(241, 230, 213, 0.18);
+  --landing-gallery-eyebrow: rgba(232, 221, 203, 0.82);
+  --landing-gallery-title: rgba(243, 237, 226, 0.98);
+  --landing-gallery-subtitle: rgba(204, 191, 171, 0.88);
+  --landing-gallery-border-warm: rgba(201, 164, 111, 0.56);
+  --landing-gallery-border-cool: rgba(125, 152, 182, 0.54);
+  --landing-gallery-border-violet: rgba(151, 142, 192, 0.54);
+  --landing-cta-overlay-1: rgba(201, 164, 111, 0.36);
+  --landing-cta-overlay-2: rgba(124, 150, 182, 0.34);
+  --landing-cta-bg-start: rgba(29, 37, 49, 0.98);
+  --landing-cta-bg-end: rgba(22, 29, 40, 0.96);
+  --landing-cta-glow: rgba(201, 164, 111, 0.24);
+  --landing-cta-sparkle: rgba(241, 230, 213, 0.22);
+
+  --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.34);
+  --shadow-strong: 0 30px 72px rgba(0, 0, 0, 0.48);
+}

@@ -1,0 +1,123 @@
+/**
+ * @fileoverview Admin reports page.
+ * Layer: Page — likes chart and CSV export; admin only.
+ * Notes:
+ * - Builds chart data from vacations list in Redux state.
+ * - CSV export reuses shared helper utility.
+ */
+
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { Button, Card, Space, Typography } from "antd";
+import { AppState } from "../../../redux/AppState";
+import { vacationsSlice } from "../../../redux/VacationsSlice";
+import { vacationsApi } from "../../../api/vacationsApi";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { exportToCsv } from "../../../utils/csvExport";
+import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
+
+/** Reports page with likes bar chart and CSV export. */
+function Reports() {
+  const dispatch = useDispatch();
+  const vacations = useSelector((state: AppState) => state.vacations);
+
+  useEffect(() => {
+    // Load vacations once if report opened before list page.
+    if (vacations.length === 0) {
+      vacationsApi
+        .getAll()
+        .then((res) =>
+          dispatch(vacationsSlice.actions.initVacations(res.data)),
+        );
+    }
+  }, [dispatch, vacations.length]);
+
+  // Recharts expects plain array of serializable objects.
+  const chartData = vacations.map((v) => ({
+    destination: v.destination,
+    likes: v.likes,
+  }));
+
+  return (
+    <div
+      className="page-content"
+      style={{ maxWidth: 1152, margin: "0 auto", padding: 32 }}
+    >
+      <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+        <Space
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            marginBottom: 32,
+          }}
+          wrap
+        >
+          <Typography.Title
+            level={2}
+            style={{ margin: 0, color: "var(--text-primary)" }}
+          >
+            Vacations Report
+          </Typography.Title>
+          <motion.div whileHover={buttonHover} whileTap={buttonTap}>
+            <Button
+              className="ghost-dark-button"
+              onClick={() => exportToCsv(vacations)}
+            >
+              Download CSV
+            </Button>
+          </motion.div>
+        </Space>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card
+          title="Likes per destination"
+          className="glass-surface"
+          style={{ borderRadius: 16 }}
+        >
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+              <XAxis
+                dataKey="destination"
+                tick={{ fontSize: 12, fill: "var(--chart-tick)" }}
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fill: "var(--chart-tick)" }}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--chart-tooltip-bg)",
+                  border: "1px solid var(--chart-tooltip-border)",
+                  color: "var(--chart-tooltip-text)",
+                }}
+                cursor={{ fill: "var(--chart-cursor)" }}
+              />
+              <Bar
+                dataKey="likes"
+                fill="var(--accent-start)"
+                radius={[6, 6, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+      </motion.div>
+    </div>
+  );
+}
+
+export default Reports;

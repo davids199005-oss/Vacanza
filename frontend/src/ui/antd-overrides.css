@@ -1,0 +1,67 @@
+.ant-btn {
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.ant-btn-primary {
+  border: none;
+  color: var(--text-inverse) !important;
+  background: linear-gradient(130deg, var(--accent-start) 0%, var(--accent-end) 100%) !important;
+  box-shadow: 0 10px 26px var(--accent-glow);
+}
+
+.ant-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 16px 34px var(--accent-glow);
+}
+
+.ant-btn-default,
+.ant-btn-text {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--bg-soft);
+}
+
+.ant-btn-default:hover:not(:disabled),
+.ant-btn-text:hover:not(:disabled) {
+  border-color: var(--border-accent) !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-elevated) !important;
+}
+
+.ant-btn-dangerous {
+  background: linear-gradient(130deg, var(--danger-accent) 0%, #b4545b 100%) !important;
+  border-color: transparent !important;
+}
+
+.ant-btn:disabled {
+  opacity: 0.6;
+}
+
+.ant-card {
+  border-color: var(--border-soft) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-picker {
+  border-color: var(--border-soft) !important;
+  background: var(--bg-muted) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-alert.ant-alert-error {
+  border: 1px solid rgba(213, 106, 113, 0.45);
+  background: rgba(213, 106, 113, 0.16);
+}
+
+.ant-alert.ant-alert-error .ant-alert-message,
+.ant-alert.ant-alert-error .ant-alert-description {
+  color: var(--text-primary);
+}
+
+.ant-alert.ant-alert-error .ant-alert-icon {
+  color: var(--danger-accent);
+}

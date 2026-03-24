@@ -1,0 +1,104 @@
+services:
+  mysql-vacanza-service:
+
+    image: mysql:8
+
+    container_name: mysql-vacanza-container
+
+    environment:
+      MYSQL_HOST: localhost
+      MYSQL_PORT: 3306
+      MYSQL_USER: vacanza_user
+      MYSQL_PASSWORD: 123123
+      MYSQL_DATABASE: vacanza
+      MYSQL_ROOT_PASSWORD: 123123 
+    
+    volumes:
+      - mysql-vacanza-volume:/var/lib/mysql
+      - ./database/MySQL:/docker-entrypoint-initdb.d
+
+
+    restart: unless-stopped
+
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  backend-vacanza-service:
+
+
+    depends_on:
+      mysql-vacanza-service:
+        condition: service_healthy
+
+
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    
+    image: davids1990/backend-vacanza-image:1.0
+    container_name: backend-vacanza-container
+
+    environment:
+      MYSQL_HOST: mysql-vacanza-service
+      MYSQL_PORT: 3306
+      MYSQL_USER: vacanza_user
+      MYSQL_PASSWORD: 123123
+      MYSQL_DATABASE: vacanza
+      
+    ports:
+      - 3000:3000
+    
+
+    volumes:
+      - backend-vacanza-volume:/app/assets
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "node", "--eval", "require('http').get('http://localhost:3000/ping', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); });"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  frontend-vacanza-service:
+
+    depends_on:
+      backend-vacanza-service:
+        condition: service_healthy
+
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    
+    image: davids1990/frontend-vacanza-image:1.0
+    container_name: frontend-vacanza-container
+    
+    ports:
+      - 80:5173
+    
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "node", "--eval", "require('http').get('http://localhost:5173/api/ping', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); });"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+volumes:
+  mysql-vacanza-volume:
+  backend-vacanza-volume:
