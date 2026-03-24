@@ -94,11 +94,138 @@ A modern fullstack travel platform for managing vacations and destinations: auth
 
 ```text
 Vacanza/
-├── frontend/         # React application
-├── backend/          # Express API + MCP integration
+├── frontend/         # React application (Vite + TypeScript)
+├── backend/          # Express API + MCP integration (TypeScript)
 ├── database/MySQL/   # MySQL initialization scripts
 ├── docs/             # UI screenshots
 └── compose.yaml      # Service orchestration
+```
+
+### Frontend Structure (`frontend/src`)
+
+```text
+frontend/src/
+├── api/              # HTTP clients and endpoint wrappers
+│   ├── axiosInstance.ts
+│   ├── authApi.ts
+│   ├── usersApi.ts
+│   ├── vacationsApi.ts
+│   ├── recommendationsApi.ts
+│   └── mcpApi.ts
+├── components/       # Reusable UI components
+│   ├── Layout/
+│   ├── Navbar/
+│   ├── SimpleNavbar/
+│   ├── Footer/
+│   └── VacationCard/
+├── config/           # Frontend constants and route/API config
+│   └── constants.ts
+├── models/           # Domain models and shared types
+│   ├── User.ts
+│   ├── Vacation.ts
+│   ├── Mcp.ts
+│   └── Role.ts
+├── pages/            # Route-level screens
+│   ├── Auth/         # Login/Register
+│   ├── Landing/
+│   ├── Vacations/
+│   ├── VacationDetails/
+│   ├── Recommendations/
+│   ├── McpChat/
+│   ├── Profile/
+│   ├── About/
+│   ├── NotFound/
+│   └── admin/        # AdminVacations, VacationForm, Reports
+├── redux/            # Global state (RTK slices + store)
+│   ├── Store.ts
+│   ├── AppState.ts
+│   ├── TokenSlice.ts
+│   ├── UserSlice.ts
+│   └── VacationsSlice.ts
+├── routes/           # Route tree and access guards
+│   ├── AppRoutes.tsx
+│   ├── ProtectedRoute.tsx
+│   └── AdminRoute.tsx
+├── schemas/          # Zod validation schemas
+│   ├── authSchemas.ts
+│   ├── profileSchemas.ts
+│   ├── vacationSchemas.ts
+│   └── aiSchemas.ts
+├── ui/               # Theme and animation tokens
+│   ├── theme.ts
+│   └── motion.ts
+├── utils/            # Pure helpers (formatting, decoding, export, etc.)
+│   ├── formatDate.ts
+│   ├── formatPrice.ts
+│   ├── jwtDecode.ts
+│   ├── restoreSession.ts
+│   ├── zodErrors.ts
+│   └── csvExport.ts
+└── main.tsx          # App entry point
+```
+
+### Backend Structure (`backend/src`)
+
+```text
+backend/src/
+├── configs/          # Env, DB pool, rate limiting config
+│   ├── env-validator.ts
+│   ├── db-config.ts
+│   └── ratelimit-config.ts
+├── controllers/      # HTTP handlers (request/response layer)
+│   ├── auth-controller.ts
+│   ├── users-controller.ts
+│   ├── vacations-controller.ts
+│   ├── recommendations-controller.ts
+│   └── mcp-controller.ts
+├── enums/            # Shared enums (roles, status codes)
+│   ├── roles-enum.ts
+│   └── status-codes-enum.ts
+├── errors/           # Custom application errors
+│   └── base-errors.ts
+├── mcp/              # MCP server bootstrapping and tools registration
+│   ├── vacanza-mcp-server.ts
+│   ├── mcp-register.ts
+│   └── mcp-tools.ts
+├── middlewares/      # Auth, admin guard, error handling
+│   ├── auth-middleware.ts
+│   ├── admin-middleware.ts
+│   └── error-handler-middleware.ts
+├── models/           # Data models and prompt templates
+│   ├── users-model.ts
+│   ├── vacations-model.ts
+│   ├── likes-model.ts
+│   ├── jwt-payload-model.ts
+│   ├── recommendations-prompt-model.ts
+│   └── mcp-prompt-model.ts
+├── routes/           # API route modules
+│   ├── auth-router.ts
+│   ├── users-router.ts
+│   ├── vacations-router.ts
+│   ├── recommendations-router.ts
+│   └── mcp-router.ts
+├── schemas/          # Zod request/params validation
+│   ├── auth-schema.ts
+│   ├── users-schema.ts
+│   ├── vacations-schema.ts
+│   ├── recommendations-schema.ts
+│   ├── mcp-schema.ts
+│   └── params-schema.ts
+├── services/         # Business logic and orchestration layer
+│   ├── auth-service.ts
+│   ├── users-service.ts
+│   ├── vacations-service.ts
+│   ├── recommendations-service.ts
+│   └── mcp-service.ts
+├── types/            # Express request augmentations
+│   └── request-user.d.ts
+├── utils/            # Mapping, JWT and file-upload helpers
+│   ├── jwt-util.ts
+│   ├── multer-util.ts
+│   ├── mcp-util.ts
+│   ├── map-users-util.ts
+│   └── map-vacations-util.ts
+└── server.ts         # Application entry point
 ```
 
 Core API domains:
