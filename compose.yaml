@@ -41,7 +41,7 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile
     
-    image: backend-vacanza-image
+    image: davids1990/backend-vacanza-image:1.0
     container_name: backend-vacanza-container
 
     environment:
@@ -82,7 +82,7 @@ services:
       context: .
       dockerfile: ./frontend/Dockerfile
     
-    image: frontend-vacanza-image
+    image: davids1990/frontend-vacanza-image:1.0
     container_name: frontend-vacanza-container
     
     ports:
