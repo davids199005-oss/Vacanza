@@ -437,6 +437,12 @@ Base URL: `http://localhost:3000/api`
 
 ---
 
+## &#x1F4DC; License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
 <div align="center">
 
 **Built with TypeScript from frontend to backend.**
