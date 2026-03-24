@@ -1,36 +1,66 @@
+<div align="center">
+
 # Vacanza
 
-A modern fullstack travel platform for managing vacations and destinations: authentication, user profile, likes, AI recommendations, and an MCP-powered chat experience.
+**Modern fullstack travel platform for vacation discovery, planning, and management.**
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=0B1220)
-![Express](https://img.shields.io/badge/Express-5-111111?logo=express)
-![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+Authentication, profile management, likes, AI travel recommendations, and MCP-powered chat in one product.
+
+<br />
+
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=0B1220)
+![Express](https://img.shields.io/badge/Express-5-111111?style=flat-square&logo=express)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-Integrated-412991?style=flat-square&logo=openai&logoColor=white)
+
+</div>
+
+---
 
 ## Table of Contents
 
-- [Features](#features)
-- [Screenshots](#screenshots)
+- [Why Vacanza](#why-vacanza)
+- [Feature Highlights](#feature-highlights)
+- [Product Screens](#product-screens)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
 - [Quick Start](#quick-start)
 - [Environment Variables](#environment-variables)
 - [API Overview](#api-overview)
 
-## Features
+---
 
-- JWT-based authentication and authorization.
-- User flows: vacations catalog, details page, likes, profile and avatar management.
-- AI travel recommendations powered by OpenAI.
-- MCP chat endpoint with tool-calling support.
-- Admin dashboard: create, update, delete vacations and view reports.
-- API hardening with `helmet`, CORS configuration, and rate limiting.
+## Why Vacanza
 
-## Screenshots
+Vacanza is built as a production-ready travel platform with a clean split between product UX and engineering foundations:
 
-### Public and Auth
+- fast React frontend with protected and admin routes;
+- typed Express backend with layered architecture;
+- MySQL persistence with schema bootstrap;
+- AI and MCP capabilities for contextual travel assistance.
 
+---
+
+## Feature Highlights
+
+| Area | What You Get |
+| --- | --- |
+| Authentication | Secure register/login flow with JWT-based authorization |
+| User Experience | Vacations catalog, details page, likes, profile and avatar updates |
+| AI Recommendations | Personalized travel suggestions powered by OpenAI |
+| MCP Chat | Tool-capable Q&A endpoint via MCP integration |
+| Admin Panel | Vacation CRUD and reporting views for operational control |
+| Security | `helmet`, CORS policy, route-level and global rate limits |
+
+---
+
+## Product Screens
+
+<details open>
+<summary><strong>Public and Auth</strong></summary>
+<br />
 <p align="center">
   <img src="docs/landing%20page.png" alt="Landing page" width="48%" />
   <img src="docs/login%20page.png" alt="Login page" width="48%" />
@@ -38,9 +68,11 @@ A modern fullstack travel platform for managing vacations and destinations: auth
 <p align="center">
   <img src="docs/register%20page.png" alt="Register page" width="48%" />
 </p>
+</details>
 
-### User Area
-
+<details>
+<summary><strong>User Area</strong></summary>
+<br />
 <p align="center">
   <img src="docs/vacations%20page.png" alt="Vacations page" width="48%" />
   <img src="docs/vacation%20details%20.png" alt="Vacation details page" width="48%" />
@@ -52,9 +84,11 @@ A modern fullstack travel platform for managing vacations and destinations: auth
 <p align="center">
   <img src="docs/mcp%20page.png" alt="MCP chat page" width="48%" />
 </p>
+</details>
 
-### Admin Area
-
+<details>
+<summary><strong>Admin Area</strong></summary>
+<br />
 <p align="center">
   <img src="docs/admin%20dashboard.png" alt="Admin dashboard" width="48%" />
   <img src="docs/vacation%20adding%20form.png" alt="Vacation creation form" width="48%" />
@@ -63,34 +97,23 @@ A modern fullstack travel platform for managing vacations and destinations: auth
   <img src="docs/vacation%20edit%20.png" alt="Vacation edit form" width="48%" />
   <img src="docs/reports%20page.png" alt="Reports page" width="48%" />
 </p>
+</details>
+
+---
 
 ## Tech Stack
 
-### Frontend
+| Layer | Stack |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite, Redux Toolkit, React Router, Ant Design, Framer Motion, Recharts, Zod |
+| Backend | Node.js, Express 5, TypeScript, MySQL (`mysql2`), JWT, bcrypt, OpenAI SDK, MCP SDK, `express-mcp-handler` |
+| Infra | Docker, Docker Compose, MySQL init scripts (`database/MySQL/vacanza.sql`) |
 
-- React 19 + TypeScript + Vite
-- Redux Toolkit
-- React Router
-- Ant Design
-- Framer Motion
-- Recharts
-- Zod
-
-### Backend
-
-- Node.js + Express 5 + TypeScript
-- MySQL 8 (`mysql2`)
-- JWT, bcrypt
-- OpenAI SDK + Model Context Protocol SDK
-- `express-mcp-handler`
-- `helmet`, `cors`, `express-rate-limit`, `multer`
-
-### Infrastructure
-
-- Docker + Docker Compose
-- SQL bootstrap from `database/MySQL/vacanza.sql`
+---
 
 ## Architecture
+
+### Workspace Overview
 
 ```text
 Vacanza/
@@ -228,7 +251,7 @@ backend/src/
 └── server.ts         # Application entry point
 ```
 
-Core API domains:
+### API Domains
 
 - `auth`: register and login.
 - `vacations`: vacation CRUD and likes.
@@ -236,23 +259,27 @@ Core API domains:
 - `recommendations`: AI travel recommendations.
 - `mcp`: protocol endpoint and user-facing `/ask`.
 
+---
+
 ## Quick Start
 
 ### Option 1: Docker Compose
 
-1. Create `backend/.env` (example below).
+1. Create `backend/.env` using the sample below.
 2. Ensure Docker is running.
-3. Run from the project root:
+3. Run from project root:
 
 ```bash
 docker compose up --build
 ```
 
-Services:
+Available services:
 
 - Frontend: `http://localhost`
 - Backend API: `http://localhost:3000`
 - Health check: `http://localhost:3000/ping`
+
+> **Note:** MySQL schema is initialized automatically from `database/MySQL/vacanza.sql`.
 
 ### Option 2: Local Development
 
@@ -272,14 +299,16 @@ npm install
 npm start
 ```
 
-Services:
+Available services:
 
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:3000`
 
+---
+
 ## Environment Variables
 
-Required backend variables (`backend/.env`):
+### Backend (`backend/.env`)
 
 ```env
 PORT=3000
@@ -295,26 +324,30 @@ MCP_SERVER_URL=http://localhost:3000/mcp
 CORS_ORIGIN=http://localhost:5173
 ```
 
-Optional frontend variables (`frontend/.env`):
+### Frontend (`frontend/.env`) Optional
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000/api
 VITE_ASSETS_BASE_URL=http://localhost:3000/images
 ```
 
+---
+
 ## API Overview
 
 Base URL: `http://localhost:3000/api`
 
-- `POST /auth/register` - register a user.
-- `POST /auth/login` - login and receive JWT.
-- `GET /vacations` - list vacations.
-- `POST /vacations/:vacationId/likes` - add like.
-- `DELETE /vacations/:vacationId/likes` - remove like.
-- `POST /recommendations` - generate AI recommendation.
-- `GET /users/me` - get current user profile.
-- `PATCH /users/me/avatar` - update user avatar.
-- `POST /mcp/ask` - ask question via MCP chat.
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/auth/register` | Register a new user |
+| `POST` | `/auth/login` | Login and receive JWT |
+| `GET` | `/vacations` | List vacations |
+| `POST` | `/vacations/:vacationId/likes` | Add like |
+| `DELETE` | `/vacations/:vacationId/likes` | Remove like |
+| `POST` | `/recommendations` | Generate AI travel recommendation |
+| `GET` | `/users/me` | Get current user profile |
+| `PATCH` | `/users/me/avatar` | Update user avatar |
+| `POST` | `/mcp/ask` | Ask question via MCP chat |
 
 Protocol MCP endpoint: `POST /mcp`.
 
