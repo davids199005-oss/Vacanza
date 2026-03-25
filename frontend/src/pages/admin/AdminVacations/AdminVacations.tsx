@@ -11,12 +11,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Button, Row, Col, Space, Typography, Flex, Alert } from "antd";
-import { AppState } from "../../../redux/AppState";
-import { vacationsSlice } from "../../../redux/VacationsSlice";
+import { AppState } from "../../../redux/appState";
+import { vacationsSlice } from "../../../redux/vacationsSlice";
 import { vacationsApi } from "../../../api/vacationsApi";
-import VacationCard from "../../../components/VacationCard/VacationCard";
+import VacationCard from "../../../components/VacationCard/vacationCard";
 import { AxiosError } from "axios";
-import { ROUTES } from "../../../config/constants";
+import { ROUTES } from "../../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
 /** Admin page to list, edit, and delete vacations. */

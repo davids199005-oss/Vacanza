@@ -6,8 +6,8 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { AuthResponse, LoginData, RegisterData } from "../models/User";
-import { API_ENDPOINTS } from "../config/constants";
+import { AuthResponse, LoginData, RegisterData } from "../models/user";
+import { API_ENDPOINTS } from "../config/appConfig";
 
 export const authApi = {
     // Create user account and return JWT.

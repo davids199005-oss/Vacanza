@@ -6,8 +6,8 @@
  * - Server-side verification still happens in backend middleware.
  */
 
-import { IUser } from "../models/User";
-import { Role } from "../models/Role";
+import { IUser } from "../models/user";
+import { Role } from "../models/role";
 
 interface JwtPayload {
     // User id claim.

@@ -10,8 +10,8 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Button, Card, Space, Typography } from "antd";
-import { AppState } from "../../../redux/AppState";
-import { vacationsSlice } from "../../../redux/VacationsSlice";
+import { AppState } from "../../../redux/appState";
+import { vacationsSlice } from "../../../redux/vacationsSlice";
 import { vacationsApi } from "../../../api/vacationsApi";
 import {
   BarChart,

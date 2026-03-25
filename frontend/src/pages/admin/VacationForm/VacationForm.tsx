@@ -12,8 +12,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Button, Card, Input, Row, Col, Space, Typography, Alert } from "antd";
 import type { FormErrors } from "../../../utils/zodErrors";
-import { AppState } from "../../../redux/AppState";
-import { vacationsSlice } from "../../../redux/VacationsSlice";
+import { AppState } from "../../../redux/appState";
+import { vacationsSlice } from "../../../redux/vacationsSlice";
 import { vacationsApi } from "../../../api/vacationsApi";
 import {
   addVacationSchema,
@@ -22,7 +22,7 @@ import {
 import { getZodErrors } from "../../../utils/zodErrors";
 import { ZodError } from "zod";
 import { AxiosError } from "axios";
-import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../../config/constants";
+import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
 const { TextArea } = Input;

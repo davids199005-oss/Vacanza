@@ -6,7 +6,7 @@
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../models/User";
+import { IUser } from "../models/user";
 
 function initUser(_currentState: IUser | null, action: PayloadAction<IUser>): IUser {
     // Replace current user with latest authenticated profile.

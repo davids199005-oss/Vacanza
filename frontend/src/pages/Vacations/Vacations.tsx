@@ -10,10 +10,10 @@ import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Typography, Row, Col, Spin, Alert, Space } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { vacationsSlice } from "../../redux/VacationsSlice";
+import { AppState } from "../../redux/appState";
+import { vacationsSlice } from "../../redux/vacationsSlice";
 import { vacationsApi } from "../../api/vacationsApi";
-import VacationCard from "../../components/VacationCard/VacationCard";
+import VacationCard from "../../components/VacationCard/vacationCard";
 import { AxiosError } from "axios";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 

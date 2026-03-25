@@ -6,7 +6,7 @@
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { VacationWithLikes } from "../models/Vacation";
+import { VacationWithLikes } from "../models/vacation";
 
 function initVacations(_currentState: VacationWithLikes[], action: PayloadAction<VacationWithLikes[]>): VacationWithLikes[] {
     // Replace full vacations collection after fetch.

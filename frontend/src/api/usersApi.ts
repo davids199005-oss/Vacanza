@@ -6,9 +6,9 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { IUser, UpdateProfileData, ChangePasswordData } from "../models/User";
-import { VacationWithLikes } from "../models/Vacation";
-import { API_ENDPOINTS } from "../config/constants";
+import { IUser, UpdateProfileData, ChangePasswordData } from "../models/user";
+import { VacationWithLikes } from "../models/vacation";
+import { API_ENDPOINTS } from "../config/appConfig";
 
 export const usersApi = {
     // Fetch current user profile.

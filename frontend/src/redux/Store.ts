@@ -6,10 +6,10 @@
  */
 
 import { configureStore } from "@reduxjs/toolkit";
-import { AppState } from "./AppState";
-import { userSlice } from "./UserSlice";
-import { tokenSlice } from "./TokenSlice";
-import { vacationsSlice } from "./VacationsSlice";
+import { AppState } from "./appState";
+import { userSlice } from "./userSlice";
+import { tokenSlice } from "./tokenSlice";
+import { vacationsSlice } from "./vacationsSlice";
 
 export const store = configureStore<AppState>({
     reducer: {

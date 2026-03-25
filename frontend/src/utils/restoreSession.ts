@@ -6,10 +6,10 @@
  */
 
 import { Store } from "@reduxjs/toolkit";
-import { tokenSlice } from "../redux/TokenSlice";
-import { userSlice } from "../redux/UserSlice";
+import { tokenSlice } from "../redux/tokenSlice";
+import { userSlice } from "../redux/userSlice";
 import { jwtDecode } from "./jwtDecode";
-import { TOKEN_STORAGE_KEY } from "../config/constants";
+import { TOKEN_STORAGE_KEY } from "../config/appConfig";
 
 /**
  * Reads token from localStorage, decodes JWT, and hydrates Redux with user and token.

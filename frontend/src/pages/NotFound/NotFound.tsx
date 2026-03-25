@@ -9,8 +9,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, Typography } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { ROUTES } from "../../config/constants";
+import { AppState } from "../../redux/appState";
+import { ROUTES } from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
 /** 404 page with contextual back link (vacations or login). */
@@ -45,15 +45,32 @@ function NotFound() {
         >
           404
         </Typography.Title>
-        <Typography.Title level={2} style={{ marginBottom: 8, color: "var(--text-primary)" }}>
+        <Typography.Title
+          level={2}
+          style={{ marginBottom: 8, color: "var(--text-primary)" }}
+        >
           Page not found
         </Typography.Title>
-        <Typography.Text style={{ color: "var(--text-secondary)", display: "block", marginBottom: 32 }}>
+        <Typography.Text
+          style={{
+            color: "var(--text-secondary)",
+            display: "block",
+            marginBottom: 32,
+          }}
+        >
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </Typography.Text>
         <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-          <Button type="primary" size="large" className="primary-gradient-button" style={{ borderRadius: 9999, padding: "8px 32px" }}>
-            <Link to={token ? ROUTES.vacations : ROUTES.login} style={{ color: "inherit" }}>
+          <Button
+            type="primary"
+            size="large"
+            className="primary-gradient-button"
+            style={{ borderRadius: 9999, padding: "8px 32px" }}
+          >
+            <Link
+              to={token ? ROUTES.vacations : ROUTES.login}
+              style={{ color: "inherit" }}
+            >
               {token ? "Back to Vacations" : "Go to Login"}
             </Link>
           </Button>

@@ -5,7 +5,7 @@
  * - Creates a temporary Blob URL and triggers browser download.
  */
 
-import { VacationWithLikes } from "../models/Vacation";
+import { VacationWithLikes } from "../models/vacation";
 
 /** Exports vacations (destination, likes) to a downloadable CSV file. */
 export function exportToCsv(vacations: VacationWithLikes[]): void {

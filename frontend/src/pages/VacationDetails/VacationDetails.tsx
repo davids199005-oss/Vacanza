@@ -11,12 +11,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Tag, Typography, Spin, Alert } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { vacationsSlice } from "../../redux/VacationsSlice";
+import { AppState } from "../../redux/appState";
+import { vacationsSlice } from "../../redux/vacationsSlice";
 import { vacationsApi } from "../../api/vacationsApi";
 import { formatDate } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
-import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../config/constants";
+import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../config/appConfig";
 import { AxiosError } from "axios";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 

@@ -11,16 +11,16 @@ import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, Form, Input, Button, Typography, Alert, Row, Col } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { userSlice } from "../../redux/UserSlice";
-import { tokenSlice } from "../../redux/TokenSlice";
+import { AppState } from "../../redux/appState";
+import { userSlice } from "../../redux/userSlice";
+import { tokenSlice } from "../../redux/tokenSlice";
 import { authApi } from "../../api/authApi";
 import { jwtDecode } from "../../utils/jwtDecode";
 import { registerSchema } from "../../schemas/authSchemas";
 import { getZodErrors, FormErrors } from "../../utils/zodErrors";
 import { ZodError } from "zod";
 import { AxiosError } from "axios";
-import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/constants";
+import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/appConfig";
 import backgroundImg from "../../assets/landing5.jpeg";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
@@ -46,7 +46,12 @@ function Register() {
     setError("");
     try {
       // Validate registration payload before API call.
-      const data = registerSchema.parse({ firstName, lastName, email, password });
+      const data = registerSchema.parse({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
       setLoading(true);
       const response = await authApi.register(data);
       const token = response.data.token;
@@ -57,7 +62,11 @@ function Register() {
     } catch (err: unknown) {
       if (err instanceof ZodError) setFieldErrors(getZodErrors(err));
       else if (err instanceof AxiosError)
-        setError(err.response?.data?.message || err.response?.data?.details || "Registration failed");
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.details ||
+            "Registration failed",
+        );
     } finally {
       setLoading(false);
     }
@@ -76,13 +85,20 @@ function Register() {
       <img
         src={backgroundImg}
         alt=""
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
       />
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(145deg, var(--auth-overlay-start), var(--auth-overlay-end))",
+          background:
+            "linear-gradient(145deg, var(--auth-overlay-start), var(--auth-overlay-end))",
           backdropFilter: "blur(7px)",
         }}
       />
@@ -108,14 +124,24 @@ function Register() {
           }}
         >
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <Typography.Title level={2} style={{ marginBottom: 8, color: "var(--text-primary)" }}>
+            <Typography.Title
+              level={2}
+              style={{ marginBottom: 8, color: "var(--text-primary)" }}
+            >
               Create account
             </Typography.Title>
-            <Typography.Text style={{ color: "var(--text-secondary)" }}>Join Vacanza and start exploring</Typography.Text>
+            <Typography.Text style={{ color: "var(--text-secondary)" }}>
+              Join Vacanza and start exploring
+            </Typography.Text>
           </div>
 
           {error && (
-            <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />
+            <Alert
+              type="error"
+              message={error}
+              showIcon
+              style={{ marginBottom: 16 }}
+            />
           )}
 
           <div>
@@ -177,7 +203,13 @@ function Register() {
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-                  <Button type="primary" htmlType="submit" block loading={loading} className="primary-gradient-button">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    block
+                    loading={loading}
+                    className="primary-gradient-button"
+                  >
                     {loading ? "Creating account..." : "Create Account"}
                   </Button>
                 </motion.div>
@@ -185,9 +217,19 @@ function Register() {
             </Form>
           </div>
 
-          <Typography.Text style={{ color: "var(--text-secondary)", display: "block", textAlign: "center", marginTop: 24 }}>
+          <Typography.Text
+            style={{
+              color: "var(--text-secondary)",
+              display: "block",
+              textAlign: "center",
+              marginTop: 24,
+            }}
+          >
             Already have an account?{" "}
-            <Link to={ROUTES.login} style={{ fontWeight: 500, color: "var(--link-accent)" }}>
+            <Link
+              to={ROUTES.login}
+              style={{ fontWeight: 500, color: "var(--link-accent)" }}
+            >
               Sign in
             </Link>
           </Typography.Text>

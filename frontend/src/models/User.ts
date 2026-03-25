@@ -5,7 +5,7 @@
  * - These types are reused by API modules, Redux, and forms.
  */
 
-import { Role } from "./Role";
+import { Role } from "./role";
 
 export interface IUser {
     // User primary identifier.

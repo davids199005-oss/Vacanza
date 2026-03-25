@@ -7,7 +7,7 @@
 
 import { NavLink } from "react-router-dom";
 import { Layout } from "antd";
-import { ROUTES } from "../../config/constants";
+import { ROUTES } from "../../config/appConfig";
 
 const { Header } = Layout;
 

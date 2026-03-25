@@ -20,30 +20,30 @@ export const globalRateLimit = rateLimit({
     legacyHeaders: false,
 });
 
-/** Auth rate limit: 50 requests per 15 minutes (login/register). */
+/** Auth rate limit: 5 requests per 15 minutes (login/register). */
 export const authRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    max: 5,
     // Auth endpoints need tighter limits to reduce brute-force risk.
     message: { message: "Too many login attempts, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-/** AI recommendations rate limit: 50 requests per 15 minutes. */
+/** AI recommendations rate limit: 30 requests per 15 minutes. */
 export const recommendationsRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    max: 30,
     // AI endpoints are protected due to higher compute cost.
     message: { message: "Too many AI requests, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-/** MCP (Model Context Protocol) rate limit: 50 requests per 15 minutes. */
+/** MCP (Model Context Protocol) rate limit: 20 requests per 15 minutes. */
 export const mcpRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    max: 20,
     // MCP endpoint limits tool-augmented AI traffic.
     message: { message: "Too many MCP requests, please try again later." },
     standardHeaders: true,

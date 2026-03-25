@@ -9,7 +9,7 @@ import { Layout, Typography } from "antd";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../ui/motion";
-import { ROUTES } from "../../config/constants";
+import { ROUTES } from "../../config/appConfig";
 
 const { Footer: AntFooter } = Layout;
 const { Text } = Typography;
@@ -48,7 +48,10 @@ function Footer() {
           Vacanza
         </Text>
         <Text style={{ color: "var(--text-secondary)" }}>|</Text>
-        <NavLink to={ROUTES.about} style={{ color: "var(--link-accent)", textDecoration: "none" }}>
+        <NavLink
+          to={ROUTES.about}
+          style={{ color: "var(--link-accent)", textDecoration: "none" }}
+        >
           About
         </NavLink>
         <Text style={{ color: "var(--text-secondary)" }}>|</Text>

@@ -5,8 +5,8 @@
  * - Used by `useSelector` typing across components.
  */
 
-import { IUser } from "../models/User";
-import { VacationWithLikes } from "../models/Vacation";
+import { IUser } from "../models/user";
+import { VacationWithLikes } from "../models/vacation";
 
 export type AppState = {
     // Authenticated user profile (or null when logged out).

@@ -6,12 +6,12 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { VacationWithLikes, IVacation } from "../models/Vacation";
+import { VacationWithLikes, IVacation } from "../models/vacation";
 import {
     API_ENDPOINTS,
     getVacationByIdEndpoint,
     getVacationLikeEndpoint,
-} from "../config/constants";
+} from "../config/appConfig";
 
 export const vacationsApi = {
     // Fetch all vacations with like metadata.

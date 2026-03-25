@@ -65,3 +65,17 @@
 .ant-alert.ant-alert-error .ant-alert-icon {
   color: var(--danger-accent);
 }
+
+.ant-alert.ant-alert-success {
+  border: 1px solid rgba(99, 181, 154, 0.45);
+  background: rgba(99, 181, 154, 0.16);
+}
+
+.ant-alert.ant-alert-success .ant-alert-message,
+.ant-alert.ant-alert-success .ant-alert-description {
+  color: var(--text-primary);
+}
+
+.ant-alert.ant-alert-success .ant-alert-icon {
+  color: var(--success-accent);
+}

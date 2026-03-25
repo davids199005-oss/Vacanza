@@ -11,17 +11,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, Form, Input, Button, Typography, Alert } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { userSlice } from "../../redux/UserSlice";
-import { tokenSlice } from "../../redux/TokenSlice";
+import { AppState } from "../../redux/appState";
+import { userSlice } from "../../redux/userSlice";
+import { tokenSlice } from "../../redux/tokenSlice";
 import { authApi } from "../../api/authApi";
 import { jwtDecode } from "../../utils/jwtDecode";
 import { loginSchema } from "../../schemas/authSchemas";
 import { getZodErrors, FormErrors } from "../../utils/zodErrors";
 import { ZodError } from "zod";
-import { Role } from "../../models/Role";
+import { Role } from "../../models/role";
 import { AxiosError } from "axios";
-import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/constants";
+import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/appConfig";
 import backgroundImg from "../../assets/landing5.jpeg";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
@@ -38,7 +38,11 @@ function Login() {
 
   // Redirect immediately when user is already authenticated.
   useEffect(() => {
-    if (user) navigate(user.role === Role.ADMIN ? ROUTES.adminVacations : ROUTES.vacations, { replace: true });
+    if (user)
+      navigate(
+        user.role === Role.ADMIN ? ROUTES.adminVacations : ROUTES.vacations,
+        { replace: true },
+      );
   }, [user, navigate]);
 
   const handleSubmit = async () => {
@@ -55,7 +59,8 @@ function Login() {
       dispatch(tokenSlice.actions.initToken(token));
       dispatch(userSlice.actions.initUser(jwtDecode(token)));
     } catch (err: unknown) {
-      if (err instanceof AxiosError) setError(err.response?.data?.message || "Login failed");
+      if (err instanceof AxiosError)
+        setError(err.response?.data?.message || "Login failed");
       else if (err instanceof ZodError) setFieldErrors(getZodErrors(err));
     } finally {
       setLoading(false);
@@ -75,13 +80,20 @@ function Login() {
       <img
         src={backgroundImg}
         alt=""
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
       />
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(145deg, var(--auth-overlay-start), var(--auth-overlay-end))",
+          background:
+            "linear-gradient(145deg, var(--auth-overlay-start), var(--auth-overlay-end))",
           backdropFilter: "blur(7px)",
         }}
       />
@@ -107,14 +119,24 @@ function Login() {
           }}
         >
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <Typography.Title level={2} style={{ marginBottom: 8, color: "var(--text-primary)" }}>
+            <Typography.Title
+              level={2}
+              style={{ marginBottom: 8, color: "var(--text-primary)" }}
+            >
               Welcome back
             </Typography.Title>
-            <Typography.Text style={{ color: "var(--text-secondary)" }}>Sign in to your Vacanza account</Typography.Text>
+            <Typography.Text style={{ color: "var(--text-secondary)" }}>
+              Sign in to your Vacanza account
+            </Typography.Text>
           </div>
 
           {error && (
-            <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />
+            <Alert
+              type="error"
+              message={error}
+              showIcon
+              style={{ marginBottom: 16 }}
+            />
           )}
 
           <div>
@@ -146,7 +168,13 @@ function Login() {
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-                  <Button type="primary" htmlType="submit" block loading={loading} className="primary-gradient-button">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    block
+                    loading={loading}
+                    className="primary-gradient-button"
+                  >
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </motion.div>
@@ -154,9 +182,19 @@ function Login() {
             </Form>
           </div>
 
-          <Typography.Text style={{ color: "var(--text-secondary)", display: "block", textAlign: "center", marginTop: 24 }}>
+          <Typography.Text
+            style={{
+              color: "var(--text-secondary)",
+              display: "block",
+              textAlign: "center",
+              marginTop: 24,
+            }}
+          >
             Don&apos;t have an account?{" "}
-            <Link to={ROUTES.register} style={{ fontWeight: 500, color: "var(--link-accent)" }}>
+            <Link
+              to={ROUTES.register}
+              style={{ fontWeight: 500, color: "var(--link-accent)" }}
+            >
               Create one
             </Link>
           </Typography.Text>

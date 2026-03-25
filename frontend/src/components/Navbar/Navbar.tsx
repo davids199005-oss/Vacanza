@@ -11,13 +11,17 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Layout, Button, Avatar, Space, Typography } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { userSlice } from "../../redux/UserSlice";
-import { tokenSlice } from "../../redux/TokenSlice";
-import { vacationsSlice } from "../../redux/VacationsSlice";
+import { AppState } from "../../redux/appState";
+import { userSlice } from "../../redux/userSlice";
+import { tokenSlice } from "../../redux/tokenSlice";
+import { vacationsSlice } from "../../redux/vacationsSlice";
 import { usersApi } from "../../api/usersApi";
-import { Role } from "../../models/Role";
-import { AVATAR_BASE_URL, ROUTES } from "../../config/constants";
+import { Role } from "../../models/role";
+import {
+  AVATAR_BASE_URL,
+  ROUTES,
+  TOKEN_STORAGE_KEY,
+} from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeIn } from "../../ui/motion";
 
 const { Header } = Layout;
@@ -44,7 +48,7 @@ function Navbar() {
     dispatch(userSlice.actions.logoutUser());
     dispatch(tokenSlice.actions.logoutToken());
     dispatch(vacationsSlice.actions.clearVacations());
-    localStorage.removeItem("token");
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
     navigate(ROUTES.login);
   };
 

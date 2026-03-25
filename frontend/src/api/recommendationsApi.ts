@@ -6,8 +6,8 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { RecommendationResponse } from "../models/Mcp";
-import { API_ENDPOINTS } from "../config/constants";
+import { RecommendationResponse } from "../models/mcp";
+import { API_ENDPOINTS } from "../config/appConfig";
 
 export const recommendationsApi = {
     // Generate recommendation text for destination.

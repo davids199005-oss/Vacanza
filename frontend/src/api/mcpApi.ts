@@ -6,8 +6,8 @@
  */
 
 import axiosInstance from "./axiosInstance";
-import { McpResponse } from "../models/Mcp";
-import { API_ENDPOINTS } from "../config/constants";
+import { McpResponse } from "../models/mcp";
+import { API_ENDPOINTS } from "../config/appConfig";
 
 export const mcpApi = {
     // Ask question against vacation data via MCP tools.

@@ -7,7 +7,7 @@
  */
 
 import axios from "axios";
-import { API_BASE_URL, TOKEN_STORAGE_KEY } from "../config/constants";
+import { API_BASE_URL, TOKEN_STORAGE_KEY } from "../config/appConfig";
 
 const axiosInstance = axios.create({
     // Base URL for all relative endpoint paths.

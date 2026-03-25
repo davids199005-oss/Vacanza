@@ -8,10 +8,13 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, Button, Tag, Typography } from "antd";
-import { VacationWithLikes } from "../../models/Vacation";
+import { VacationWithLikes } from "../../models/vacation";
 import { formatDate } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
-import { VACATION_IMAGE_BASE_URL, getVacationDetailsRoute } from "../../config/constants";
+import {
+  VACATION_IMAGE_BASE_URL,
+  getVacationDetailsRoute,
+} from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
 /** Props for VacationCard. */
@@ -54,7 +57,9 @@ function VacationCard({
         style={{ overflow: "hidden", borderRadius: 16, cursor: "pointer" }}
         onClick={handleCardClick}
         cover={
-          <div style={{ position: "relative", height: 208, overflow: "hidden" }}>
+          <div
+            style={{ position: "relative", height: 208, overflow: "hidden" }}
+          >
             <img
               src={`${VACATION_IMAGE_BASE_URL}/${vacation.image}`}
               alt={vacation.destination}
@@ -78,14 +83,31 @@ function VacationCard({
           </div>
         }
       >
-        <Typography.Title level={5} style={{ marginBottom: 4, color: "var(--text-primary)" }}>
+        <Typography.Title
+          level={5}
+          style={{ marginBottom: 4, color: "var(--text-primary)" }}
+        >
           {vacation.destination}
         </Typography.Title>
-        <Typography.Text style={{ color: "var(--text-secondary)", fontSize: 13, display: "block", marginBottom: 8 }}>
+        <Typography.Text
+          style={{
+            color: "var(--text-secondary)",
+            fontSize: 13,
+            display: "block",
+            marginBottom: 8,
+          }}
+        >
           {vacation.description.slice(0, 80)}
           {vacation.description.length > 80 ? "…" : ""}
         </Typography.Text>
-        <Typography.Text style={{ color: "var(--text-secondary)", fontSize: 12, display: "block", marginBottom: 16 }}>
+        <Typography.Text
+          style={{
+            color: "var(--text-secondary)",
+            fontSize: 12,
+            display: "block",
+            marginBottom: 16,
+          }}
+        >
           {formatDate(vacation.startDate)} — {formatDate(vacation.endDate)}
         </Typography.Text>
 
@@ -96,8 +118,15 @@ function VacationCard({
               <Button
                 type={vacation.isLiked ? "primary" : "default"}
                 size="small"
-                className={vacation.isLiked ? "primary-gradient-button" : "ghost-dark-button"}
-                onClick={(e) => { e.stopPropagation(); onLikeToggle?.(vacation.id, vacation.isLiked); }}
+                className={
+                  vacation.isLiked
+                    ? "primary-gradient-button"
+                    : "ghost-dark-button"
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLikeToggle?.(vacation.id, vacation.isLiked);
+                }}
               >
                 {vacation.isLiked ? "❤️" : "🤍"} {vacation.likes}
               </Button>
@@ -107,12 +136,26 @@ function VacationCard({
           {showAdminActions && (
             <>
               <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-                <Button size="small" className="ghost-dark-button" onClick={(e) => { e.stopPropagation(); onEdit?.(vacation.id); }}>
+                <Button
+                  size="small"
+                  className="ghost-dark-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit?.(vacation.id);
+                  }}
+                >
                   Edit
                 </Button>
               </motion.div>
               <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-                <Button size="small" danger onClick={(e) => { e.stopPropagation(); onDelete?.(vacation.id); }}>
+                <Button
+                  size="small"
+                  danger
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete?.(vacation.id);
+                  }}
+                >
                   Delete
                 </Button>
               </motion.div>

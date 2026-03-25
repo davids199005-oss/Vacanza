@@ -21,13 +21,13 @@ import {
   Col,
 } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/AppState";
-import { userSlice } from "../../redux/UserSlice";
-import { tokenSlice } from "../../redux/TokenSlice";
-import { vacationsSlice } from "../../redux/VacationsSlice";
+import { AppState } from "../../redux/appState";
+import { userSlice } from "../../redux/userSlice";
+import { tokenSlice } from "../../redux/tokenSlice";
+import { vacationsSlice } from "../../redux/vacationsSlice";
 import { usersApi } from "../../api/usersApi";
 import { jwtDecode } from "../../utils/jwtDecode";
-import { IUser } from "../../models/User";
+import { IUser } from "../../models/user";
 import {
   updateProfileSchema,
   changePasswordSchema,
@@ -35,7 +35,12 @@ import {
 import { getZodErrors, FormErrors } from "../../utils/zodErrors";
 import { ZodError } from "zod";
 import { AxiosError } from "axios";
-import { AVATAR_BASE_URL, ROUTES, IMAGE_FILE_ACCEPT } from "../../config/constants";
+import {
+  AVATAR_BASE_URL,
+  ROUTES,
+  IMAGE_FILE_ACCEPT,
+  TOKEN_STORAGE_KEY,
+} from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
 /** Profile page with avatar, profile form, password form, and danger zone. */
@@ -84,7 +89,7 @@ function Profile() {
       setLoading(true);
       const res = await usersApi.updateProfile(data);
       // Refresh token/user claims (email/name may have changed).
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem(TOKEN_STORAGE_KEY, res.data.token);
       dispatch(tokenSlice.actions.initToken(res.data.token));
       dispatch(userSlice.actions.initUser(jwtDecode(res.data.token)));
       setMessage("Profile updated successfully");
@@ -150,7 +155,7 @@ function Profile() {
       dispatch(userSlice.actions.logoutUser());
       dispatch(tokenSlice.actions.logoutToken());
       dispatch(vacationsSlice.actions.clearVacations());
-      localStorage.removeItem("token");
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
       navigate(ROUTES.login);
     } catch (err: unknown) {
       if (err instanceof AxiosError)

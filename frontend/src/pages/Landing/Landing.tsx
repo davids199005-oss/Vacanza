@@ -1,14 +1,20 @@
 import { Link } from "react-router-dom";
 import { Button, Col, Row, Space, Typography } from "antd";
 import { motion } from "framer-motion";
-import { ROUTES } from "../../config/constants";
+import { ROUTES } from "../../config/appConfig";
 import landing1Img from "../../assets/landing1.jpg";
 import landing2Img from "../../assets/landing2.jpg";
 import landing3Img from "../../assets/landing3.jpg";
 import landing4Img from "../../assets/landing4.jpg";
 import landing5Img from "../../assets/landing5.jpeg";
-import { buttonHover, buttonTap, fadeUp, staggerContainer, staggerItem } from "../../ui/motion";
-import "../../ui/Landing.css"
+import {
+  buttonHover,
+  buttonTap,
+  fadeUp,
+  staggerContainer,
+  staggerItem,
+} from "../../ui/motion";
+import "../../ui/Landing.css";
 
 type Feature = {
   icon: string;
@@ -32,22 +38,26 @@ const features: Feature[] = [
   {
     icon: "1",
     title: "Curated destinations",
-    description: "Explore handpicked places designed for memorable city breaks, nature retreats, and luxury escapes.",
+    description:
+      "Explore handpicked places designed for memorable city breaks, nature retreats, and luxury escapes.",
   },
   {
     icon: "2",
     title: "AI smart planning",
-    description: "Get route ideas, personalized timing, and tailored activity suggestions based on your travel style.",
+    description:
+      "Get route ideas, personalized timing, and tailored activity suggestions based on your travel style.",
   },
   {
     icon: "3",
     title: "Favorites and sharing",
-    description: "Save dream places, organize shortlists, and share a refined trip board with your travel companions.",
+    description:
+      "Save dream places, organize shortlists, and share a refined trip board with your travel companions.",
   },
   {
     icon: "4",
     title: "One elegant workflow",
-    description: "Move from discovery to decision in one polished experience built for speed and confidence.",
+    description:
+      "Move from discovery to decision in one polished experience built for speed and confidence.",
   },
 ];
 
@@ -58,11 +68,36 @@ const stats: Stat[] = [
 ];
 
 const galleryItems: GalleryItem[] = [
-  { image: landing1Img, title: "Madrid", subtitle: "City of art and culture", accent: "warm" },
-  { image: landing2Img, title: "Moscow", subtitle: "Kremlin and Red Square", accent: "cool" },
-  { image: landing3Img, title: "Jaffa", subtitle: "Old town with beautiful views", accent: "violet" },
-  { image: landing4Img, title: "Haifa", subtitle: "The city of the flowers", accent: "cool" },
-  { image: landing5Img, title: "Prague", subtitle: "Evening reflections", accent: "warm" },
+  {
+    image: landing1Img,
+    title: "Madrid",
+    subtitle: "City of art and culture",
+    accent: "warm",
+  },
+  {
+    image: landing2Img,
+    title: "Moscow",
+    subtitle: "Kremlin and Red Square",
+    accent: "cool",
+  },
+  {
+    image: landing3Img,
+    title: "Jaffa",
+    subtitle: "Old town with beautiful views",
+    accent: "violet",
+  },
+  {
+    image: landing4Img,
+    title: "Haifa",
+    subtitle: "The city of the flowers",
+    accent: "cool",
+  },
+  {
+    image: landing5Img,
+    title: "Prague",
+    subtitle: "Evening reflections",
+    accent: "warm",
+  },
 ];
 
 const floatingTransition = {
@@ -98,27 +133,52 @@ function Landing() {
             <span className="landing-pill">Luxury travel platform</span>
           </motion.div>
 
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1}>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+          >
             <Typography.Title level={1} className="landing-hero__title">
               We plan your travel
               <span className="accent-gradient-text"> to perfection</span>
             </Typography.Title>
           </motion.div>
 
-          <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={2} className="landing-hero__description">
-            Vacanza is a travel planning platform that helps you plan your vacation to the best destinations in the world.
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={2}
+            className="landing-hero__description"
+          >
+            Vacanza is a travel planning platform that helps you plan your
+            vacation to the best destinations in the world.
           </motion.p>
 
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={3} className="landing-hero__actions">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={3}
+            className="landing-hero__actions"
+          >
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-              <Button type="primary" size="large" className="primary-gradient-button landing-action-button">
+              <Button
+                type="primary"
+                size="large"
+                className="primary-gradient-button landing-action-button"
+              >
                 <Link to={ROUTES.register} className="landing-link-reset">
                   Start Planning
                 </Link>
               </Button>
             </motion.div>
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-              <Button size="large" className="ghost-dark-button landing-action-button">
+              <Button
+                size="large"
+                className="ghost-dark-button landing-action-button"
+              >
                 <Link to={ROUTES.login} className="landing-link-reset">
                   Login
                 </Link>
@@ -140,8 +200,12 @@ function Landing() {
                 animate={{ y: [0, index % 2 === 0 ? -6 : -4, 0] }}
                 transition={{ ...floatingTransition, delay: index * 0.35 }}
               >
-                <Typography.Text className="landing-stat-card__value">{stat.value}</Typography.Text>
-                <Typography.Text className="landing-stat-card__label">{stat.label}</Typography.Text>
+                <Typography.Text className="landing-stat-card__value">
+                  {stat.value}
+                </Typography.Text>
+                <Typography.Text className="landing-stat-card__label">
+                  {stat.label}
+                </Typography.Text>
               </motion.div>
             ))}
           </motion.div>
@@ -158,13 +222,22 @@ function Landing() {
       </section>
 
       <section className="landing-section">
-        <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
-          <motion.div variants={staggerItem} className="landing-section__heading">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+        >
+          <motion.div
+            variants={staggerItem}
+            className="landing-section__heading"
+          >
             <Typography.Title level={2} className="landing-section__title">
               Designed for premium travel decisions
             </Typography.Title>
             <Typography.Text className="landing-section__subtitle">
-              A modern travel workflow that combines inspiration, smart recommendations, and confidence at every step.
+              A modern travel workflow that combines inspiration, smart
+              recommendations, and confidence at every step.
             </Typography.Text>
           </motion.div>
 
@@ -177,8 +250,13 @@ function Landing() {
                   whileHover={{ y: -8, scale: 1.01, rotateX: 2 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
                 >
-                  <span className="landing-feature-card__index">{feature.icon}</span>
-                  <Typography.Title level={4} className="landing-feature-card__title">
+                  <span className="landing-feature-card__index">
+                    {feature.icon}
+                  </span>
+                  <Typography.Title
+                    level={4}
+                    className="landing-feature-card__title"
+                  >
                     {feature.title}
                   </Typography.Title>
                   <Typography.Text className="landing-feature-card__description">
@@ -198,12 +276,16 @@ function Landing() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          <motion.div variants={staggerItem} className="landing-section__heading">
+          <motion.div
+            variants={staggerItem}
+            className="landing-section__heading"
+          >
             <Typography.Title level={2} className="landing-section__title">
               Explore the best destinations in the world
             </Typography.Title>
             <Typography.Text className="landing-section__subtitle">
-              Our platform is designed to help you plan your vacation to the best destinations in the world.
+              Our platform is designed to help you plan your vacation to the
+              best destinations in the world.
             </Typography.Text>
           </motion.div>
 
@@ -216,16 +298,22 @@ function Landing() {
                 initial={{ opacity: 0, y: 28, scale: 0.98 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.22 }}
-                transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
+                transition={{
+                  duration: 0.55,
+                  delay: index * 0.08,
+                  ease: "easeOut",
+                }}
                 whileHover={{ y: -8, scale: 1.015 }}
               >
                 <div className="landing-gallery-card__media">
                   <img src={item.image} alt={`${item.title} destination`} />
                 </div>
                 <div className="landing-gallery-card__meta">
-                  <Typography.Text className="landing-gallery-card__eyebrow">
-                  </Typography.Text>
-                  <Typography.Title level={4} className="landing-gallery-card__title">
+                  <Typography.Text className="landing-gallery-card__eyebrow"></Typography.Text>
+                  <Typography.Title
+                    level={4}
+                    className="landing-gallery-card__title"
+                  >
                     {item.title}
                   </Typography.Title>
                   <Typography.Text className="landing-gallery-card__subtitle">
@@ -241,7 +329,7 @@ function Landing() {
       <section className="landing-cta">
         <motion.div
           className="landing-cta__panel"
-          initial={{ opacity: 0, y: 28, scale: 0.80 }}
+          initial={{ opacity: 0, y: 28, scale: 0.8 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.75, ease: "easeOut" }}
@@ -250,16 +338,26 @@ function Landing() {
             className="landing-cta__sparkle"
             aria-hidden="true"
             animate={{ x: ["-120%", "140%"] }}
-            transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
+            transition={{
+              duration: 2.8,
+              repeat: Infinity,
+              repeatDelay: 1.8,
+              ease: "easeInOut",
+            }}
           />
           <Typography.Title level={5} className="landing-cta__title">
             Build your next extraordinary trip
           </Typography.Title>
           <Typography.Text className="landing-cta__subtitle">
-            Join travelers who plan faster, choose better destinations, and enjoy a premium booking journey.
+            Join travelers who plan faster, choose better destinations, and
+            enjoy a premium booking journey.
           </Typography.Text>
           <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-            <Button type="primary" size="large" className="primary-gradient-button landing-action-button">
+            <Button
+              type="primary"
+              size="large"
+              className="primary-gradient-button landing-action-button"
+            >
               <Link to={ROUTES.register} className="landing-link-reset">
                 Let's start planning your dream vacation
               </Link>
