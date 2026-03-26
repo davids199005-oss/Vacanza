@@ -67,7 +67,7 @@ class Server {
         server.use("/api/recommendations", recommendationsRateLimit, recommendationsRouter);
         server.use("/api/users", usersRouter);
         server.use("/api/mcp", mcpRateLimit, mcpRouter);
-        server.use("/mcp", mcpRouter);
+        server.use("/mcp", mcpRateLimit, mcpRouter);
 
         // Keep error handler last so all upstream errors are captured.
         server.use(errorHandlerMiddleware);
