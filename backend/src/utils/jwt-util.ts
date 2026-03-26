@@ -25,7 +25,7 @@ export function generateToken(user: IUser): string {
 
   // Sign token with shared secret and constrained metadata.
   return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: "1d",          
+    expiresIn: "1h",          
     algorithm: "HS256",       
     issuer: "vacanza-api",    
     audience: "vacanza-app",  
