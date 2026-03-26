@@ -12,7 +12,7 @@ import { IUser } from "../models/users-model.ts";
 import { UnauthorizedError } from "../errors/base-errors.ts";
 import { JwtPayload } from "../models/jwt-payload-model.ts";
 
-/** Creates a signed JWT from user data; 1d expiry, HS256. */
+/** Creates a signed JWT from user data; 1h expiry, HS256. */
 export function generateToken(user: IUser): string {
   // Build minimal payload required by frontend + RBAC.
   const payload: JwtPayload = {
