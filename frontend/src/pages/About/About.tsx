@@ -1,19 +1,31 @@
 /**
- * @fileoverview About page.
- * Layer: Page — features, tech stack; accessible to all users.
- * Notes:
- * - Chooses navbar variant based on auth state.
- * - Renders feature cards and technology badges.
+ * @fileoverview Страница "О проекте" (About).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Информационная страница с описанием возможностей платформы и
+ *   используемого технологического стека (React, Node.js, MySQL и т.д.).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages. Доступна и авторизованным, и неавторизованным.
+ *   В зависимости от наличия токена показывает Navbar (полный) или
+ *   SimpleNavbar (минимальный).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Хранит локальные массивы features (карточки возможностей) и
+ *     techStack (карточки технологий).
+ *   - Берёт token из Redux, чтобы выбрать вариант navbar.
+ *   - Использует Framer Motion (staggerContainer/staggerItem) для
+ *     последовательной анимации появления карточек.
  */
 
 import { Card, Typography, Row, Col } from "antd";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
+import { AppState } from "../../redux/AppState";
 import { staggerContainer, staggerItem } from "../../ui/motion";
-import Navbar from "../../components/Navbar/navbar";
-import SimpleNavbar from "../../components/SimpleNavbar/simpleNavbar";
-import Footer from "../../components/Footer/footer";
+import Navbar from "../../components/Navbar/Navbar";
+import SimpleNavbar from "../../components/SimpleNavbar/SimpleNavbar";
+import Footer from "../../components/Footer/Footer";
 
 const features = [
   {
@@ -59,16 +71,16 @@ const techStack = [
   { name: "Zod", role: "Validation" },
 ];
 
-/** About page with features and tech stack. Navbar varies by auth state. */
+/** Страница About: карточки возможностей и стека. Navbar меняется по auth-состоянию. */
 function About() {
-  // Token determines whether the full navbar can be shown.
+  // Выбор шапки: по наличию токена определяем полный или упрощённый navbar.
   const token = useSelector((state: AppState) => state.token);
 
   return (
     <div
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
-      {/* Authenticated users get full navbar; guests see simple navbar. */}
+      {/* Навигация: авторизованные видят полный navbar, гости — упрощённый. */}
       {token ? <Navbar /> : <SimpleNavbar />}
       <div
         style={{
@@ -105,7 +117,7 @@ function About() {
           </Typography.Text>
         </motion.div>
 
-        {/* Features section. */}
+        {/* Секция возможностей продукта. */}
         <Typography.Title
           level={3}
           style={{
@@ -167,7 +179,7 @@ function About() {
           </Row>
         </motion.div>
 
-        {/* Tech stack section. */}
+        {/* Секция используемого технологического стека. */}
         <Typography.Title
           level={3}
           style={{

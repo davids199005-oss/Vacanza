@@ -1,14 +1,20 @@
 /**
- * @fileoverview Zod schemas for AI features (recommendations, MCP chat).
- * Layer: Validation — recommendation and MCP question validation.
- * Notes:
- * - Prevents empty/oversized prompts before hitting paid API endpoints.
+ * @fileoverview Zod-схемы для AI-эндпоинтов (рекомендации и MCP-чат).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает клиентскую валидацию для двух AI-форм:
+ *     - запрос рекомендации по направлению;
+ *     - вопрос для MCP-чата.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Schema (фронт). Дублирует серверные правила, чтобы пользователь
+ *   видел ошибки сразу в UI и не делал лишний запрос на сервер.
  */
 
 import { z } from "zod";
 
 export const recommendationSchema = z.object({
-    // Destination query for recommendation generation.
+    // Валидируем направление (2..100 символов, тримим пробелы).
     destination: z
         .string({ message: "Destination is required" })
         .trim()
@@ -17,7 +23,7 @@ export const recommendationSchema = z.object({
 });
 
 export const mcpQuestionSchema = z.object({
-    // Question text for MCP chat endpoint.
+    // Валидируем текст вопроса перед отправкой (2..500 символов).
     question: z
         .string({ message: "Question is required" })
         .trim()

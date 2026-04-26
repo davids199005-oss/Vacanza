@@ -1,8 +1,14 @@
 /**
- * @fileoverview App footer with links and copyright.
- * Layer: Layout — shared footer component.
- * Notes:
- * - Shared between protected and public layouts.
+ * @fileoverview Общий футер приложения.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Отрисовывает нижнюю часть страницы с брендом, ссылкой "About" и
+ *   копирайтом. Использует общий стиль (glass surface) и Framer Motion
+ *   для плавного появления.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Components. Подключается в Layout под Content и появляется на
+ *   всех защищённых страницах SPA.
  */
 
 import { Layout, Typography } from "antd";
@@ -14,7 +20,7 @@ import { ROUTES } from "../../config/appConfig";
 const { Footer: AntFooter } = Layout;
 const { Text } = Typography;
 
-/** Footer with brand, About link, and copyright. */
+/** Футер: бренд, ссылка About и копирайт. */
 function Footer() {
   return (
     <AntFooter
@@ -29,7 +35,7 @@ function Footer() {
         backdropFilter: "blur(10px)",
       }}
     >
-      {/* Footer content with brand, nav link, and attribution. */}
+      {/* Основной контент футера: бренд, ссылка About и атрибуция автора. */}
       <motion.div
         variants={fadeIn}
         initial="hidden"

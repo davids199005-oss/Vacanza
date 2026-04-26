@@ -1,27 +1,37 @@
 /**
- * @fileoverview HTTP status codes used across the API.
- * Layer: Domain — centralizes status code constants.
- * Notes:
- * - Avoids magic numbers in controllers/middlewares.
+ * @fileoverview Enum HTTP-статусов, используемых API.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Централизует константы HTTP-кодов, чтобы избежать «магических чисел»
+ *   в контроллерах, middleware и обработчике ошибок.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. Контроллеры используют эти константы при формировании ответов,
+ *   а классы доменных ошибок — при сопоставлении ошибки и HTTP-статуса.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   Перечисляет коды успеха и ошибок, которые реально используются API:
+ *   200/201/204 для успехов, 400/401/403/404/409 для клиентских ошибок,
+ *   500 для серверных.
  */
 
 export enum StatusCode {
-    // Standard success.
+    // Успех — стандартный 200.
     OK = 200,
-    // Resource created successfully.
+    // Ресурс успешно создан (POST → новая сущность).
     CREATED = 201,
-    // Success with empty response body.
+    // Успех без тела ответа (например, после DELETE).
     NO_CONTENT = 204,
-    // Invalid client request.
+    // Некорректный запрос клиента (валидация, формат и т.п.).
     BAD_REQUEST = 400,
-    // Missing/invalid authentication.
+    // Аутентификация отсутствует или невалидна.
     UNAUTHORIZED = 401,
-    // Authenticated but not allowed.
+    // Пользователь аутентифицирован, но не имеет прав на действие.
     FORBIDDEN = 403,
-    // Resource not found.
+    // Запрошенный ресурс не найден.
     NOT_FOUND = 404,
-    // Data conflict (e.g., duplicate unique key).
+    // Конфликт данных (например, дубликат уникального ключа — email).
     CONFLICT = 409,
-    // Unexpected server failure.
+    // Непредвиденная ошибка сервера.
     INTERNAL_SERVER_ERROR = 500,
 }

@@ -1,21 +1,31 @@
 /**
- * @fileoverview Redux slice for current user state.
- * Layer: State — authenticated user in Redux.
- * Notes:
- * - Mirrors current user claims/profile used across UI and guards.
+ * @fileoverview Redux-слайс текущего пользователя.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Хранит распакованный из JWT профиль текущего пользователя (или null,
+ *   если пользователь не авторизован). Используется компонентами для
+ *   проверки роли (admin), отображения имени и т.д.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой State Management. Источником данных служит JWT-payload —
+ *   этот объект кладётся сюда после каждого получения нового токена.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - initUser(user) — сохраняет профиль (после login/register/refresh).
+ *   - logoutUser()   — сбрасывает в null (logout).
  */
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../models/user";
+import { IUser } from "../models/User";
 
 function initUser(_currentState: IUser | null, action: PayloadAction<IUser>): IUser {
-    // Replace current user with latest authenticated profile.
+    // Сохраняем актуальные данные авторизованного пользователя.
     const newState = action.payload;
     return newState;
 }
 
 function logoutUser(): null {
-    // Clear user on logout/unauthorized.
+    // Сбрасываем пользователя при выходе.
     return null;
 }
 

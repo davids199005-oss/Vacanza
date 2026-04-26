@@ -1,9 +1,26 @@
 /**
- * @fileoverview Profile page.
- * Layer: Page — avatar, profile edit, password change, delete account.
- * Notes:
- * - Loads profile on mount and supports segmented profile operations.
- * - Keeps Redux token/user in sync when profile update returns new JWT.
+ * @fileoverview Страница профиля пользователя.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Сводная страница, на которой пользователь управляет своим аккаунтом:
+ *     - меняет аватар (multipart upload через usersApi.updateAvatar);
+ *     - редактирует имя/фамилию/email (с обновлением JWT-токена);
+ *     - меняет пароль (с проверкой текущего);
+ *     - удаляет аккаунт (опасная операция с подтверждением).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages (приватная). Самая «толстая» страница из пользовательских:
+ *   три формы и опасная зона удаления аккаунта.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - useEffect → loadProfile(): GET /users/me при первом рендере.
+ *   - handleUpdateProfile: валидация Zod → запрос → обновление токена и
+ *     профиля в Redux (потому что в JWT хранится имя/email/role).
+ *   - handleAvatarChange: подготовка FormData и patch-запрос. После успеха
+ *     обновляет avatarKey, чтобы перебить кеш браузера на новой картинке.
+ *   - handleChangePassword: валидация Zod (включая совпадение new/confirm),
+ *     запрос, очистка полей пароля.
+ *   - handleDeleteAccount: window.confirm + полный logout (state + storage).
  */
 
 import { useState, useEffect } from "react";
@@ -21,13 +38,13 @@ import {
   Col,
 } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
-import { userSlice } from "../../redux/userSlice";
-import { tokenSlice } from "../../redux/tokenSlice";
-import { vacationsSlice } from "../../redux/vacationsSlice";
+import { AppState } from "../../redux/AppState";
+import { userSlice } from "../../redux/UserSlice";
+import { tokenSlice } from "../../redux/TokenSlice";
+import { vacationsSlice } from "../../redux/VacationsSlice";
 import { usersApi } from "../../api/usersApi";
 import { jwtDecode } from "../../utils/jwtDecode";
-import { IUser } from "../../models/user";
+import { IUser } from "../../models/User";
 import {
   updateProfileSchema,
   changePasswordSchema,
@@ -43,7 +60,7 @@ import {
 } from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** Profile page with avatar, profile form, password form, and danger zone. */
+/** Страница профиля: аватар, форма данных, форма пароля и опасная зона. */
 function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,7 +80,7 @@ function Profile() {
   const [avatarKey, setAvatarKey] = useState(Date.now());
 
   useEffect(() => {
-    // Initial profile fetch.
+    // Загружаем профиль с сервера при открытии страницы (для аватара и валидных дефолтов формы).
     loadProfile();
   }, []);
 
@@ -84,11 +101,11 @@ function Profile() {
     setError("");
     setMessage("");
     try {
-      // Validate profile payload before update.
+      // Валидируем поля Zod-схемой перед запросом.
       const data = updateProfileSchema.parse({ firstName, lastName, email });
       setLoading(true);
       const res = await usersApi.updateProfile(data);
-      // Refresh token/user claims (email/name may have changed).
+      // Сервер прислал свежий JWT с обновлёнными claims — синхронизируем localStorage и Redux.
       localStorage.setItem(TOKEN_STORAGE_KEY, res.data.token);
       dispatch(tokenSlice.actions.initToken(res.data.token));
       dispatch(userSlice.actions.initUser(jwtDecode(res.data.token)));
@@ -105,7 +122,7 @@ function Profile() {
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    // Send multipart payload with avatar binary.
+    // Отправляем изображение аватара через multipart/form-data (поле "avatar").
     const fd = new FormData();
     fd.append("avatar", file);
     try {
@@ -126,7 +143,7 @@ function Profile() {
     setError("");
     setMessage("");
     try {
-      // Validate password-change payload.
+      // Валидируем форму смены пароля (current/new/confirm + проверка совпадения).
       const data = changePasswordSchema.parse({
         currentPassword,
         newPassword,
@@ -148,7 +165,7 @@ function Profile() {
   };
 
   const handleDeleteAccount = async () => {
-    // Destructive action confirmation.
+    // Защита от случайного удаления — обязательное подтверждение через window.confirm.
     if (!window.confirm("Are you sure? This action cannot be undone.")) return;
     try {
       await usersApi.deleteAccount();

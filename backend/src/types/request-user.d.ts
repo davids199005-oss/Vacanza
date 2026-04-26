@@ -1,15 +1,29 @@
 /**
- * @fileoverview Express Request augmentation: adds optional user from JWT.
- * Layer: Type — extends Express.Request with req.user.
- * Notes:
- * - `req.user` is populated by `authMiddleware` after token verification.
- * - Optional because not every route uses authentication.
+ * @fileoverview Расширение типа Express.Request полем `req.user`.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Декларативно дополняет глобальный namespace Express, добавляя в Request
+ *   опциональное поле `user`, в которое после JWT-аутентификации кладётся
+ *   полезная нагрузка токена (id пользователя, роль и т.д.).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Type (декларации). Не содержит исполняемого кода, только типы.
+ *   Благодаря этому файлу контроллеры могут безопасно обращаться к `req.user.id`
+ *   без ручного приведения типов и без локальных определений в каждом модуле.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Объявляет global augmentation для namespace Express.
+ *   - В интерфейс Request добавляет опциональное поле `user: JwtPayload | undefined`.
+ *   - Поле заполняется в `authMiddleware` после успешной верификации токена;
+ *     для публичных роутов оно остаётся `undefined`, поэтому тип опциональный.
+ *   - Пустой `export {}` нужен, чтобы файл стал ES-модулем — без этого
+ *     `declare global` работать не будет.
  */
 
 declare global {
   namespace Express {
     interface Request {
-      // Decoded JWT payload for authenticated requests.
+      // Распарсенный JWT-payload для аутентифицированных запросов.
       user?: import('../models/jwt-payload-model.ts').JwtPayload;
     }
   }

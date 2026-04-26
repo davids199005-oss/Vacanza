@@ -1,45 +1,58 @@
 /**
- * @fileoverview Vacation domain models.
- * Layer: Domain — shared types for vacation entities across the app.
- * Notes:
- * - `VacationWithLikes` extends base vacation with social metadata.
+ * @fileoverview Доменные типы вакаций для всего фронтенда.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает три формы сущности «отпуск»:
+ *     - IVacation         — базовая структура с фронтовыми типами полей;
+ *     - VacationWithLikes — расширение с лайками для отображения списков;
+ *     - VacationFormData  — структура данных формы добавления/редактирования.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Models. Используется API-клиентом, Redux-слайсом vacations,
+ *   карточками и формами админки.
+ *
+ * Особенности типизации:
+ *   - Даты приходят с backend строками — оставляем `string`, чтобы
+ *     избежать повсеместного парсинга.
+ *   - price — `string` потому, что backend возвращает MySQL DECIMAL как строку
+ *     (точность важнее удобства арифметики).
  */
 
 export interface IVacation {
-    // Vacation primary identifier.
+    // Базовые поля карточки отпуска.
     id: number;
-    // Destination label.
+    // Название направления.
     destination: string;
-    // Vacation description.
+    // Описание поездки.
     description: string;
-    // Start date string (ISO or backend-formatted).
+    // Дата начала (ISO-строка или формат backend).
     startDate: string;
-    // End date string (ISO or backend-formatted).
+    // Дата окончания (ISO-строка или формат backend).
     endDate: string;
-    // Price string from backend DECIMAL.
+    // Цена строкой (MySQL DECIMAL → string).
     price: string;
-    // Vacation image filename.
+    // Имя файла изображения вакации.
     image: string ;
 }
 
 export interface VacationWithLikes extends IVacation {
-    // Total likes count.
+    // Социальные метрики: количество лайков и факт лайка текущим пользователем.
     likes: number;
-    // Whether current user liked this vacation.
+    // Лайкнул ли текущий пользователь эту вакацию.
     isLiked: boolean;
 }
 
 export interface VacationFormData {
-    // Form destination value.
+    // Поля формы добавления/редактирования вакации.
     destination: string;
-    // Form description value.
+    // Описание из формы.
     description: string;
-    // Form start date string.
+    // Дата начала из формы (строка YYYY-MM-DD).
     startDate: string;
-    // Form end date string.
+    // Дата окончания из формы.
     endDate: string;
-    // Form numeric price value.
+    // Числовая цена из формы.
     price: number;
-    // Optional uploaded image.
+    // Опциональный загружаемый файл (при создании — обязателен по бизнес-правилам).
     image?: File;
 }

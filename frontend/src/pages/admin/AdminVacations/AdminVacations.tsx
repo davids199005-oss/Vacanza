@@ -1,9 +1,19 @@
 /**
- * @fileoverview Admin vacations management page.
- * Layer: Page — list vacations with edit/delete; admin only.
- * Notes:
- * - Uses shared vacations cache from Redux.
- * - Delete action updates state optimistically after successful API call.
+ * @fileoverview Админская страница управления вакациями.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Список всех вакаций для администратора с возможностью добавить
+ *   новую (кнопка) и операциями редактирования/удаления на каждой карточке.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages → admin/. Защищена AdminRoute (требует роль admin).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - useEffect: при пустом кеше — GET /api/vacations и заполнение Redux.
+ *   - handleEdit(id): переход на страницу VacationForm в режиме редактирования.
+ *   - handleDelete(id): подтверждение через window.confirm → DELETE → удаление
+ *     из Redux-кеша через slice.deleteVacation.
+ *   - Использует VacationCard в режиме showAdminActions (без like-кнопки).
  */
 
 import { useEffect, useState } from "react";
@@ -11,15 +21,15 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Button, Row, Col, Space, Typography, Flex, Alert } from "antd";
-import { AppState } from "../../../redux/appState";
-import { vacationsSlice } from "../../../redux/vacationsSlice";
+import { AppState } from "../../../redux/AppState";
+import { vacationsSlice } from "../../../redux/VacationsSlice";
 import { vacationsApi } from "../../../api/vacationsApi";
-import VacationCard from "../../../components/VacationCard/vacationCard";
+import VacationCard from "../../../components/VacationCard/VacationCard";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
-/** Admin page to list, edit, and delete vacations. */
+/** Админская страница: список, редактирование и удаление вакаций. */
 function AdminVacations() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,7 +38,7 @@ function AdminVacations() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch vacations only if cache is empty.
+    // Грузим вакации только если кеш в Redux пустой.
     if (vacations.length === 0) {
       vacationsApi
         .getAll()
@@ -40,10 +50,10 @@ function AdminVacations() {
     }
   }, [dispatch, vacations.length]);
 
-  // Navigate to edit form for selected vacation.
+  // Действия над карточкой: переход к редактированию и удаление с подтверждением.
   const handleEdit = (id: number) => navigate(`/admin/vacations/${id}/edit`);
   const handleDelete = async (id: number) => {
-    // Ask confirmation before destructive deletion.
+    // Защита от случайного удаления — обязательное подтверждение.
     if (!window.confirm("Are you sure you want to delete this vacation?"))
       return;
     try {

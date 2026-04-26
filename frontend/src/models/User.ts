@@ -1,64 +1,70 @@
 /**
- * @fileoverview User and auth-related domain models.
- * Layer: Domain — shared types for user, auth, and profile operations.
- * Notes:
- * - These types are reused by API modules, Redux, and forms.
+ * @fileoverview Доменные типы пользователя и аутентификации.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает все интерфейсы, связанные с пользователем на фронте:
+ *   профиль (IUser), DTO логина/регистрации, обновления профиля и смены пароля,
+ *   и формат ответа от auth-эндпоинтов.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Models. Эти типы циркулируют между API-клиентом, Redux Store и
+ *   формами на странице Profile/Auth.
  */
 
-import { Role } from "./role";
+import { Role } from "./Role";
 
 export interface IUser {
-    // User primary identifier.
+    // Базовые поля учётной записи пользователя.
     id: number;
-    // Profile first name.
+    // Имя пользователя.
     firstName: string;
-    // Profile last name.
+    // Фамилия пользователя.
     lastName: string;
-    // Login email.
+    // Email — используется для логина.
     email: string;
-    // Authorization role.
+    // Роль для проверок RBAC.
     role: Role;
-    // Avatar filename or null when absent.
+    // Имя файла аватара или null, если аватар не задан.
     avatar: string | null;
 }
 
 export interface LoginData {
-    // Email credential.
+    // Учётные данные для авторизации.
     email: string;
-    // Password credential.
+    // Пароль пользователя.
     password: string;
 }
 
 export interface RegisterData {
-    // New account first name.
+    // Имя для нового аккаунта.
     firstName: string;
-    // New account last name.
+    // Фамилия для нового аккаунта.
     lastName: string;
-    // New account email.
+    // Email для нового аккаунта.
     email: string;
-    // New account password.
+    // Пароль для нового аккаунта.
     password: string;
 }
 
 export interface AuthResponse {
-    // Access token returned by backend.
+    // Access-токен, который возвращает backend.
     token: string;
 }
 
 export interface UpdateProfileData {
-    // Updated first name.
+    // Новые значения полей профиля.
     firstName: string;
-    // Updated last name.
+    // Новое значение фамилии.
     lastName: string;
-    // Updated email.
+    // Новое значение email.
     email: string;
 }
 
 export interface ChangePasswordData {
-    // Current password for verification.
+    // Текущий пароль (для подтверждения операции).
     currentPassword: string;
-    // New password candidate.
+    // Новый пароль.
     newPassword: string;
-    // Confirmation of new password.
+    // Подтверждение нового пароля (защита от опечатки).
     confirmPassword: string;
 }

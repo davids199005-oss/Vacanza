@@ -1,23 +1,28 @@
 /**
- * @fileoverview Redux store configuration.
- * Layer: State — root store with user, token, vacations slices.
- * Notes:
- * - Root reducer keys define the shape of `AppState`.
+ * @fileoverview Конфигурация корневого Redux Store.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Создаёт configureStore с типом AppState и подключает три slice-редьюсера:
+ *   user, token, vacations. Это «точка сборки» state-слоя.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой State Management. Экспортируемый `store` подключается через
+ *   <Provider> в `main.tsx`, после чего доступен всему дереву компонентов.
  */
 
 import { configureStore } from "@reduxjs/toolkit";
-import { AppState } from "./appState";
-import { userSlice } from "./userSlice";
-import { tokenSlice } from "./tokenSlice";
-import { vacationsSlice } from "./vacationsSlice";
+import { AppState } from "./AppState";
+import { userSlice } from "./UserSlice";
+import { tokenSlice } from "./TokenSlice";
+import { vacationsSlice } from "./VacationsSlice";
 
 export const store = configureStore<AppState>({
     reducer: {
-        // Authenticated user profile state.
+        // Состояние профиля текущего авторизованного пользователя.
         user: userSlice.reducer,
-        // Raw JWT token state.
+        // Состояние access-токена (JWT).
         token: tokenSlice.reducer,
-        // Vacations list and optimistic like/delete updates.
+        // Кеш списка вакаций и локальные обновления like/delete.
         vacations: vacationsSlice.reducer,
     },
 });

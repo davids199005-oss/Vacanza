@@ -1,9 +1,26 @@
 /**
- * @fileoverview MCP tools: vacation stats, search, top liked.
- * Layer: MCP — implements tools exposed to the AI via MCP protocol.
- * Notes:
- * - Each method executes SQL and formats output through `mcpUtil`.
- * - Tool outputs are JSON-text payloads compatible with MCP SDK.
+ * @fileoverview Реализации MCP-инструментов.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Содержит конкретные SQL-запросы, которые исполняются, когда AI-модель
+ *   вызывает соответствующий tool через MCP. Каждый метод возвращает
+ *   CallToolResult — стандартный формат ответа MCP SDK.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой MCP. По сути это мини-репозиторий «только для AI» — отделён от
+ *   обычных backend-сервисов, чтобы tools имели чёткие границы и были
+ *   безопасны для вызова через LLM.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ (по методам):
+ *   - getVacationsStatsTool()        — общее число, мин/средняя/макс цена,
+ *                                       и счётчики active/upcoming/past.
+ *   - getVacationsWithLikesTool()    — все вакации с числом лайков и статусом
+ *                                       relative to NOW().
+ *   - searchByRegionTool({region})   — LIKE %region% по destination.
+ *   - getTopLikedTool({limit?})      — топ-N лайкнутых; по умолчанию 5.
+ *
+ *   Все возвращаемые объекты упаковываются через `mcpUtil.getToolResult`
+ *   в текстовый JSON-payload, понятный MCP-клиенту и LLM.
  */
 
 import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
@@ -12,11 +29,11 @@ import { mcpUtil } from "../utils/mcp-util.ts";
 
 class McpTools {
 
-    /** Returns total count, avg/min/max price, active/upcoming/past counts. */
+    /** Считает агрегатную статистику по таблице vacations. */
     public async getVacationsStatsTool(): Promise<CallToolResult> {
-        // Aggregate global statistics across all vacations.
+        // Один SQL-запрос, чтобы получить все агрегаты сразу.
         const [rows] = await db.execute(`
-            SELECT 
+            SELECT
                 COUNT(*) as total,
                 ROUND(AVG(price), 2) as avgPrice,
                 MIN(price) as minPrice,
@@ -29,17 +46,17 @@ class McpTools {
         return mcpUtil.getToolResult(rows);
     }
 
-    /** Returns all vacations with likes and status (active/upcoming/past). */
+    /** Возвращает все вакации с числом лайков и статусом (active/upcoming/past). */
     public async getVacationsWithLikesTool(): Promise<CallToolResult> {
-        // Join likes and compute status relative to current date.
+        // JOIN с likes и вычисление статуса относительно текущего времени.
         const [rows] = await db.execute(`
-            SELECT 
+            SELECT
                 v.destination,
                 v.start_date,
                 v.end_date,
                 v.price,
                 COUNT(l.user_id) as likes,
-                CASE 
+                CASE
                     WHEN start_date <= NOW() AND end_date >= NOW() THEN 'active'
                     WHEN start_date > NOW() THEN 'upcoming'
                     ELSE 'past'
@@ -52,11 +69,11 @@ class McpTools {
         return mcpUtil.getToolResult(rows);
     }
 
-    /** Searches vacations by destination (LIKE %region%). */
+    /** Поиск по подстроке в destination (LIKE %region%). */
     public async searchByRegionTool(args: { region: string }): Promise<CallToolResult> {
-        // Pattern search by destination text.
+        // Параметризованный LIKE — безопасен для пользовательского ввода.
         const [rows] = await db.execute(`
-            SELECT 
+            SELECT
                 v.destination,
                 v.start_date,
                 v.end_date,
@@ -70,11 +87,11 @@ class McpTools {
         return mcpUtil.getToolResult(rows);
     }
 
-    /** Returns top liked vacations; default limit 5, max 100. */
+    /** Топ-N лайкнутых вакаций; по умолчанию 5, валидация max=100 — в schema. */
     public async getTopLikedTool(args: { limit?: number }): Promise<CallToolResult> {
-        // Return most liked vacations in descending order.
+        // Возвращаем самые лайкнутые вакации в убывающем порядке.
         const [rows] = await db.execute(`
-            SELECT 
+            SELECT
                 v.destination,
                 v.start_date,
                 v.end_date,

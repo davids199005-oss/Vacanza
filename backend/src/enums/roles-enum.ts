@@ -1,13 +1,23 @@
 /**
- * @fileoverview User role enum for RBAC.
- * Layer: Domain — defines authorization levels.
- * Notes:
- * - Keep values synchronized with DB role values.
+ * @fileoverview Enum пользовательских ролей для RBAC.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Определяет уровни доступа пользователей системы. Используется
+ *   в JWT-payload, в middleware admin/auth и в проверках сервисов.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. Это часть доменной модели приложения — единый список ролей,
+ *   на который опирается весь контроль доступа (Role-Based Access Control).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Перечисляет допустимые значения ролей.
+ *   - Значения совпадают со строками, хранящимися в столбце `role` таблицы users
+ *     в БД, поэтому при изменении нужно обновлять и БД, и этот enum.
  */
 
 export enum Role {
-    // Regular authenticated user.
+    // Обычный аутентифицированный пользователь.
     USER = 'user',
-    // Privileged administrator.
+    // Привилегированный администратор (CRUD на вакации, доступ к управлению пользователями).
     ADMIN = 'admin',
 }

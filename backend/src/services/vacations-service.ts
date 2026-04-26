@@ -1,9 +1,25 @@
 /**
- * @fileoverview Vacation CRUD and likes service.
- * Layer: Service — vacations, likes, image file cleanup.
- * Notes:
- * - All vacation queries include like count and isLiked for the current user.
- * - Image files are removed from disk when vacation is deleted.
+ * @fileoverview Сервис вакаций (CRUD + лайки + чистка изображений).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Реализует все операции над сущностью «отпуск»:
+ *     - чтение списка вакаций с агрегатом лайков и флагом isLiked;
+ *     - добавление, обновление и удаление вакации;
+ *     - постановка/снятие лайка пользователем;
+ *     - удаление файлов изображений с диска при удалении/замене.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Service. Вызывается vacations-controller. Не знает про HTTP-уровень.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - getAllVacations(userId) — один запрос с LEFT JOIN на likes, считает
+ *     общее количество лайков и флаг isLiked для текущего пользователя.
+ *   - addVacation/updateVacation — нормализуют даты в формат ISO YYYY-MM-DD
+ *     для совместимости с MySQL DATE.
+ *   - deleteVacation — удаляет запись из БД и (best-effort) файл изображения.
+ *   - addLike — использует INSERT IGNORE, чтобы повторный лайк не падал
+ *     с ошибкой уникальности.
+ *   - removeLike — DELETE по паре (user_id, vacation_id).
  */
 
 import { db } from "../configs/db-config.ts";
@@ -17,10 +33,11 @@ import path from "path";
 
 class VacationsService {
 
-  /** Returns all vacations with like count and isLiked for the user. */
+  /** Возвращает все вакации с числом лайков и флагом isLiked для пользователя. */
   public async getAllVacations(userId: number): Promise<VacationWithLikes[]> {
+    // Один SQL-запрос: агрегируем likes и флаг isLiked, чтобы избежать N+1.
     const [rows] = await db.execute(`
-      SELECT 
+      SELECT
         v.id,
         v.destination,
         v.description,
@@ -38,8 +55,9 @@ class VacationsService {
     return (rows as RawVacation[]).map(mapVacation);
   }
 
+  /** Добавляет вакацию с уже сохранённым на диск именем файла изображения. */
   public async addVacation(dto: AddVacationSchema, imageName: string): Promise<IVacation> {
-    // Store date-only values to align with SQL DATE columns.
+    // Сохраняем только дату (без времени) — это совпадает с типом DATE в SQL.
     const startDate = dto.startDate.toISOString().split('T')[0];
     const endDate = dto.endDate.toISOString().split('T')[0];
     const [result] = await db.execute(`
@@ -59,8 +77,9 @@ class VacationsService {
     };
   }
 
+  /** Обновляет вакацию; если новое изображение не передано — оставляет прежнее. */
   public async updateVacation(id: number, dto: UpdateVacationSchema, imageName?: string): Promise<IVacation> {
-    // Read current record so update can keep old image when none provided.
+    // Читаем текущую запись, чтобы при отсутствии нового файла оставить старый image.
     const [rows] = await db.execute(
       'SELECT image FROM vacations WHERE id = ?', [id]
     );
@@ -72,14 +91,14 @@ class VacationsService {
     const endDate = dto.endDate.toISOString().split('T')[0];
 
     await db.execute(`
-      UPDATE vacations 
+      UPDATE vacations
       SET destination = ?, description = ?, start_date = ?, end_date = ?, price = ?, image = ?
       WHERE id = ?
     `, [dto.destination, dto.description, startDate, endDate, dto.price, finalImageName, id]);
-    // If image was replaced, remove old file from storage.
+    // Если изображение реально заменилось — удаляем старый файл с диска.
     if (imageName && imageName !== existing.image) {
       const oldpath = path.join(process.cwd(), "assets/images/vacations", existing.image);
-      await fs.unlink(oldpath).catch(() => {}); // Ignore if file missing
+      await fs.unlink(oldpath).catch(() => {}); // Игнорируем, если файла уже нет.
     }
 
     return {
@@ -93,14 +112,15 @@ class VacationsService {
     };
   }
 
+  /** Удаляет вакацию из БД и связанный файл изображения. */
   public async deleteVacation(id: number): Promise<void> {
-    // Preserve image filename before DB deletion for cleanup.
+    // До удаления из БД сохраняем имя файла, чтобы потом удалить его с диска.
     const [rows] = await db.execute(
       'SELECT image FROM vacations WHERE id = ?', [id]
     );
     const existing = (rows as { image: string }[])[0];
     if (!existing) throw new NotFoundError('Vacation image not found');
-    
+
 
     const [result] = await db.execute(
       'DELETE FROM vacations WHERE id = ?', [id]
@@ -108,12 +128,12 @@ class VacationsService {
     if ((result as ResultSetHeader).affectedRows === 0) {
       throw new NotFoundError('Vacation not found');
     }
-    // Best-effort file cleanup; missing file should not fail endpoint.
+    // Best-effort удаление файла: его отсутствие не должно валить эндпоинт.
     const imagePath = path.join(process.cwd(), 'assets/images/vacations', existing.image);
-    await fs.unlink(imagePath).catch(() => {}); // Ignore if file missing
+    await fs.unlink(imagePath).catch(() => {}); // Игнорируем, если файла уже нет.
   }
 
-  /** Adds like; INSERT IGNORE avoids duplicate. */
+  /** Ставит лайк; INSERT IGNORE предотвращает дубль на уникальном индексе. */
   public async addLike(userId: number, vacationId: number): Promise<void> {
     const [rows] = await db.execute(
       'SELECT id FROM vacations WHERE id = ?', [vacationId]
@@ -127,6 +147,7 @@ class VacationsService {
     );
   }
 
+  /** Снимает лайк (если его не было — DELETE просто отработает «вхолостую»). */
   public async removeLike(userId: number, vacationId: number): Promise<void> {
     await db.execute(
       'DELETE FROM likes WHERE user_id = ? AND vacation_id = ?',

@@ -1,21 +1,27 @@
 /**
- * @fileoverview Main app shell layout (navbar, content, footer).
- * Layer: Layout — shared layout for protected routes.
- * Notes:
- * - Wraps all authenticated pages under common chrome.
+ * @fileoverview Основной каркас интерфейса (navbar + content + footer).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Базовая обёртка для всех защищённых страниц SPA. Сверху рендерит
+ *   Navbar, посередине — содержимое текущего вложенного маршрута через
+ *   <Outlet />, снизу — Footer.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Components. Используется в AppRoutes как layout-компонент над
+ *   ProtectedRoute. Все приватные страницы наследуют этот общий каркас.
  */
 
 import { Outlet } from "react-router-dom";
 import { Layout as AntLayout } from "antd";
-import Navbar from "../Navbar/navbar";
-import Footer from "../Footer/footer";
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
 
 const { Content } = AntLayout;
 
-/** Layout with Navbar, Content, and Footer. */
+/** Layout с Navbar, Content и Footer. */
 function Layout() {
   return (
-    // Shared shell used by nested protected routes.
+    // Общий контейнер для вложенных защищённых маршрутов SPA.
     <AntLayout
       className="app-shell"
       style={{

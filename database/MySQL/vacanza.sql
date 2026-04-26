@@ -1,3 +1,6 @@
+-- Этот файл инициализирует БД Vacanza:
+-- 1) создаёт схему, 2) создаёт таблицы, 3) добавляет стартовые данные.
+-- Используется контейнером MySQL при первом запуске окружения.
 CREATE DATABASE  IF NOT EXISTS `vacanza` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `vacanza`;
 -- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
@@ -17,7 +20,8 @@ USE `vacanza`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
+-- Таблица likes хранит связи "пользователь <-> понравившийся тур".
+-- Внешние ключи гарантируют целостность при удалении пользователей/туров.
 -- Table structure for table `likes`
 --
 
@@ -44,7 +48,8 @@ INSERT INTO `likes` VALUES (14,39),(14,36),(14,35),(14,46);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
+-- Таблица users хранит учетные записи и роли системы.
+-- Поле role определяет права доступа (user/admin).
 -- Table structure for table `users`
 --
 
@@ -74,7 +79,8 @@ INSERT INTO `users` VALUES (14,'David','Veryutin','davids199005@gmail.com','$2b$
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
+-- Таблица vacations хранит каталог туров, доступный во frontend.
+-- Поля дат и цены используются в фильтрации и отображении карточек туров.
 -- Table structure for table `vacations`
 --
 

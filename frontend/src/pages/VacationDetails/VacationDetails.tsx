@@ -1,9 +1,21 @@
 /**
- * @fileoverview Vacation detail page.
- * Layer: Page — single vacation view with like, status, dates.
- * Notes:
- * - Reads selected vacation from Redux cache by route param id.
- * - Falls back to API fetch when page is opened directly.
+ * @fileoverview Страница детального просмотра одной вакации.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Открывается по маршруту /vacations/:id. Показывает крупное изображение,
+ *   статус (Active/Upcoming/Completed), даты, длительность, описание и
+ *   кнопку лайка.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages (приватная). Берёт сущность из Redux-кеша по id; если кеш
+ *   ещё пуст, делает GET /api/vacations и заполняет его.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - useParams → берёт :id из URL и приводит к числу.
+ *   - useMemo → выбирает нужную вакацию из state.vacations.
+ *   - useEffect → загружает список, если кеш пуст.
+ *   - getStatus() → вычисляет статус поездки по текущей дате.
+ *   - handleLikeToggle → запрос на сервер + dispatch toggleLike.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -11,8 +23,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Tag, Typography, Spin, Alert } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
-import { vacationsSlice } from "../../redux/vacationsSlice";
+import { AppState } from "../../redux/AppState";
+import { vacationsSlice } from "../../redux/VacationsSlice";
 import { vacationsApi } from "../../api/vacationsApi";
 import { formatDate } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
@@ -20,7 +32,7 @@ import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../config/appConfig";
 import { AxiosError } from "axios";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** Vacation detail page with status tag, dates, description, and like button. */
+/** Страница деталей вакации: статус, даты, описание и кнопка лайка. */
 function VacationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,7 +49,7 @@ function VacationDetails() {
 
   const loading = vacations.length === 0 && !error;
 
-  // Fetch vacations if not cached (e.g. direct URL)
+  // Если кеш вакаций пуст — подгружаем список с сервера, иначе используем уже сохранённый.
   useEffect(() => {
     if (vacations.length !== 0) return;
 
@@ -52,7 +64,7 @@ function VacationDetails() {
   const handleLikeToggle = async () => {
     if (!vacation) return;
     try {
-      // Toggle like server-side and update Redux snapshot.
+      // Сначала меняем лайк на сервере, затем синхронно обновляем Redux-state.
       if (vacation.isLiked) await vacationsApi.removeLike(vacation.id);
       else await vacationsApi.addLike(vacation.id);
       const newLiked = !vacation.isLiked;
@@ -69,7 +81,7 @@ function VacationDetails() {
   };
 
   const getStatus = () => {
-    // Derive status tag by comparing current date with vacation range.
+    // Вычисляем статус (Completed/Active/Upcoming) по текущей дате.
     if (!vacation) return null;
     const now = new Date();
     const start = new Date(vacation.startDate);
@@ -136,7 +148,7 @@ function VacationDetails() {
 
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 24px" }}>
-      {/* Back button */}
+      {/* Кнопка возврата на список вакаций. */}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -157,7 +169,7 @@ function VacationDetails() {
         </motion.div>
       </motion.div>
 
-      {/* Hero image */}
+      {/* Большое cover-изображение с overlay (название, статус, цена). */}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -235,7 +247,7 @@ function VacationDetails() {
         </div>
       </motion.div>
 
-      {/* Details grid */}
+      {/* Подробности: даты, длительность, описание, число лайков. */}
       <motion.div
         initial="hidden"
         animate="visible"

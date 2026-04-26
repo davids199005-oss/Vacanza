@@ -1,8 +1,16 @@
 /**
- * @fileoverview App entry point.
- * Layer: Bootstrap — mounts React app, restores session, providers.
- * Notes:
- * - Session is restored before first render to avoid auth flicker.
+ * @fileoverview Точка входа frontend-приложения.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Это самый первый скрипт SPA, который выполняет браузер. Здесь:
+ *     1. Восстанавливается auth-состояние из localStorage (до первого рендера).
+ *     2. Создаётся React-root и монтируется дерево с провайдерами:
+ *        ConfigProvider (Ant Design тема) → Provider (Redux store) →
+ *        BrowserRouter (роутер) → AppRoutes.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Bootstrap. Этот файл «склеивает» store, тему, роутер и компонент
+ *   маршрутов в готовое приложение.
  */
 
 import { StrictMode } from "react";
@@ -16,10 +24,12 @@ import { restoreSession } from "./utils/restoreSession";
 import AppRoutes from "./routes/AppRoutes";
 import "./index.css";
 
-// Restore auth state before mounting the app.
+// Восстанавливаем auth-состояние ДО первого рендера, чтобы избежать
+// «мигания» интерфейса (когда сначала рисуется страница для гостя,
+// а потом — для авторизованного пользователя).
 restoreSession(store);
 
-// Mount app with theme, Redux store, and router providers.
+// Монтируем приложение с темой, Redux Store и Router-провайдерами.
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ConfigProvider theme={theme}>

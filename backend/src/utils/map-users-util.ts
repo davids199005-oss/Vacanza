@@ -1,34 +1,45 @@
 /**
- * @fileoverview Maps raw DB user rows to domain models.
- * Layer: Util — converts snake_case column names to camelCase.
- * Notes:
- * - Keeps mapping logic centralized to avoid duplication in services.
+ * @fileoverview Маппинг user-строк из БД в доменную модель IUser.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   В таблице БД колонки именуются в snake_case (`first_name`, `last_name`),
+ *   а в коде приложения принят camelCase. Этот файл инкапсулирует
+ *   единое преобразование, чтобы его не приходилось дублировать в каждом сервисе.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Util. Используется в users-service и auth-service сразу после
+ *   получения rows[] из mysql2.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - RawUser    — описывает «сырое» представление строки из БД.
+ *   - mapUser()  — конвертирует RawUser → IUser, переводя имена полей
+ *                   в camelCase. Прочие поля копируются as-is.
  */
 
 import { IUser } from '../models/users-model.ts';
 import { Role } from '../enums/roles-enum.ts';
 
-/** Raw row shape from user queries (snake_case columns). */
+/** Сырое представление строки из таблицы users (snake_case-колонки). */
 export interface RawUser {
-  // Database primary key.
+  // Первичный ключ.
   id: number;
-  // DB column: first_name.
+  // Колонка БД: first_name.
   first_name: string;
-  // DB column: last_name.
+  // Колонка БД: last_name.
   last_name: string;
-  // Unique email.
+  // Уникальный email пользователя.
   email: string;
-  // Password hash from DB.
+  // Хеш пароля из БД.
   password: string;
-  // Role value (`user` | `admin`).
+  // Значение роли (`user` | `admin`).
   role: Role;
-  // Avatar file name or null.
+  // Имя файла аватара или null.
   avatar: string | null;
 }
 
-/** Maps DB row to IUser; converts first_name/last_name to camelCase. */
+/** Преобразует строку БД в IUser; переводит first_name/last_name в camelCase. */
 export function mapUser(row: RawUser): IUser {
-  // Convert DB naming convention to API/service naming convention.
+  // Конвертируем соглашение БД в соглашение API/сервисного слоя.
   return {
     id: row.id,
     firstName: row.first_name,

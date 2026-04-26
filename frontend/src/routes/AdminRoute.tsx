@@ -1,20 +1,29 @@
 /**
- * @fileoverview Route guard for admin-only pages.
- * Layer: Routing — redirects non-admins to /vacations.
- * Notes:
- * - Client-side guard improves UX; backend still enforces real security.
+ * @fileoverview Guard для маршрутов, доступных только администратору.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Оборачивает админские маршруты и пропускает дальше только пользователей
+ *   с ролью admin. Остальных редиректит на /vacations.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Routes (фронт). Используется в AppRoutes как обёртка над группой
+ *   /admin/* маршрутов.
+ *
+ * ВАЖНО: это клиентский guard для UX. Реальная защита от не-админов
+ * по-прежнему лежит на сервере (adminMiddleware) — клиентскую проверку
+ * можно обойти, но ни один защищённый запрос не пройдёт без серверной.
  */
 
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { AppState } from "../redux/appState";
-import { Role } from "../models/role";
+import { AppState } from "../redux/AppState";
+import { Role } from "../models/Role";
 
-/** Renders children if user is admin; otherwise redirects to /vacations. */
+/** Пропускает во вложенный маршрут только пользователя с ролью admin. */
 function AdminRoute() {
-  // Read authenticated user from global state.
+  // Берём текущего пользователя из Redux-состояния.
   const user = useSelector((state: AppState) => state.user);
-  // Render nested route only for admin users.
+  // Клиентский guard для UX; серверная проверка прав остаётся обязательной.
   return user?.role === Role.ADMIN ? (
     <Outlet />
   ) : (

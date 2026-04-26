@@ -1,3 +1,26 @@
+/**
+ * @fileoverview Лендинговая страница продукта Vacanza.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Публичная посадочная страница, которую пользователь видит первой,
+ *   попадая на корень сайта (/). Обзор продукта, преимуществ и направлений,
+ *   плюс CTA на регистрацию/логин.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages. Самостоятельная композиция (без общего Layout/Navbar) —
+ *   собственный footer и собственная стилизация (`Landing.css`).
+ *
+ * СТРУКТУРА:
+ *   - Hero-секция: заголовок, подзаголовок, CTA-кнопки и карточки статистики.
+ *   - Секция Features: 4 ценностных блока продукта.
+ *   - Секция Gallery: визуальные карточки направлений (5 локаций).
+ *   - Финальный CTA-блок (повторно зовёт зарегистрироваться).
+ *   - Footer с публичными ссылками (About / Sign In / Register).
+ *
+ * Для анимаций используется Framer Motion (staggerContainer/staggerItem,
+ * fadeUp, плавающая floatingTransition для статистических карточек).
+ */
+
 import { Link } from "react-router-dom";
 import { Button, Col, Row, Space, Typography } from "antd";
 import { motion } from "framer-motion";
@@ -100,6 +123,7 @@ const galleryItems: GalleryItem[] = [
   },
 ];
 
+// Общий transition для "плавающей" анимации карточек статистики.
 const floatingTransition = {
   duration: 8.0,
   repeat: Infinity,
@@ -112,6 +136,7 @@ function Landing() {
     <div className="app-shell landing-page">
       <div className="landing-page__noise" />
 
+      {/* Hero-секция: первое впечатление, ключевой оффер и CTA-кнопки. */}
       <section className="landing-hero">
         <div className="landing-hero__media" aria-hidden="true">
           <img src={landing5Img} alt="" className="landing-hero__image" />
@@ -221,6 +246,7 @@ function Landing() {
         </motion.div>
       </section>
 
+      {/* Секция преимуществ: ценностные блоки продукта. */}
       <section className="landing-section">
         <motion.div
           variants={staggerContainer}
@@ -269,6 +295,7 @@ function Landing() {
         </motion.div>
       </section>
 
+      {/* Секция галереи: визуальные примеры направлений. */}
       <section className="landing-section">
         <motion.div
           variants={staggerContainer}
@@ -326,6 +353,7 @@ function Landing() {
         </motion.div>
       </section>
 
+      {/* Финальный CTA для перехода к регистрации. */}
       <section className="landing-cta">
         <motion.div
           className="landing-cta__panel"
@@ -366,6 +394,7 @@ function Landing() {
         </motion.div>
       </section>
 
+      {/* Нижняя навигация лендинга (публичные ссылки). */}
       <footer className="landing-footer">
         <div className="landing-footer__col landing-footer__col--left">
           <Typography.Text strong className="landing-footer__brand">

@@ -1,12 +1,25 @@
 /**
- * @fileoverview Vacations API client (CRUD, likes).
- * Layer: API — vacation management endpoints.
- * Notes:
- * - Create/update operations use multipart for optional image upload.
+ * @fileoverview API-клиент для работы с отпусками (CRUD + лайки).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Объединяет все запросы к /api/vacations: получение списка, создание,
+ *   редактирование, удаление и операции лайков.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой API-клиента. Используется как обычными страницами (Vacations,
+ *   VacationDetails), так и админскими (admin/VacationForm и др.).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - getAll             — GET /vacations.
+ *   - add(formData)      — POST /vacations (multipart/form-data — есть файл).
+ *   - update(id, fd)     — PUT  /vacations/:id (multipart/form-data).
+ *   - delete(id)         — DELETE /vacations/:id.
+ *   - addLike(id)        — POST /vacations/:id/likes.
+ *   - removeLike(id)     — DELETE /vacations/:id/likes.
  */
 
 import axiosInstance from "./axiosInstance";
-import { VacationWithLikes, IVacation } from "../models/vacation";
+import { VacationWithLikes, IVacation } from "../models/Vacation";
 import {
     API_ENDPOINTS,
     getVacationByIdEndpoint,
@@ -14,31 +27,31 @@ import {
 } from "../config/appConfig";
 
 export const vacationsApi = {
-    // Fetch all vacations with like metadata.
+    // Чтение: получаем список вакаций с метаданными лайков.
     getAll: () =>
         axiosInstance.get<VacationWithLikes[]>(API_ENDPOINTS.vacations),
 
-    // Create new vacation record.
+    // Изменения: создание вакации через multipart/form-data (с файлом).
     add: (formData: FormData) =>
         axiosInstance.post<IVacation>(API_ENDPOINTS.vacations, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         }),
 
-    // Update existing vacation record by id.
+    // Обновление существующей вакации по id (файл опционален).
     update: (id: number, formData: FormData) =>
         axiosInstance.put<IVacation>(getVacationByIdEndpoint(id), formData, {
             headers: { "Content-Type": "multipart/form-data" },
         }),
 
-    // Delete vacation by id.
+    // Удаление: удаляем вакацию по идентификатору.
     delete: (id: number) =>
         axiosInstance.delete(getVacationByIdEndpoint(id)),
 
-    // Add like for current user.
+    // Лайки: ставим лайк текущим пользователем.
     addLike: (vacationId: number) =>
         axiosInstance.post(getVacationLikeEndpoint(vacationId)),
 
-    // Remove like for current user.
+    // Снимаем лайк текущего пользователя.
     removeLike: (vacationId: number) =>
         axiosInstance.delete(getVacationLikeEndpoint(vacationId)),
 };

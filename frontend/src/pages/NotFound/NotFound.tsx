@@ -1,21 +1,31 @@
 /**
- * @fileoverview 404 fallback page.
- * Layer: Page — catch-all route for unknown paths.
- * Notes:
- * - Redirect target adapts to auth state.
+ * @fileoverview Страница 404 (NotFound).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Fallback-страница, которую показывает router для любых URL,
+ *   не подходящих ни под один из определённых маршрутов.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages. В AppRoutes привязана к маршруту `*`.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Показывает крупное «404» и текст-пояснение.
+ *   - Кнопка возврата выбирается контекстно: если есть токен — ведёт на
+ *     /vacations, иначе — на /login. Это сделано, чтобы пользователь
+ *     попал на «логичную» для своего состояния страницу.
  */
 
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, Typography } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
+import { AppState } from "../../redux/AppState";
 import { ROUTES } from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
-/** 404 page with contextual back link (vacations or login). */
+/** Страница 404 с контекстной ссылкой возврата (vacations или login). */
 function NotFound() {
-  // If logged in, suggest returning to vacations; otherwise to login.
+  // Контекстная ссылка возврата: авторизованного ведём на /vacations, иначе на /login.
   const token = useSelector((state: AppState) => state.token);
 
   return (

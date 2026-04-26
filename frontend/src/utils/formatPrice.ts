@@ -1,13 +1,21 @@
 /**
- * @fileoverview Price formatting for display.
- * Layer: Utils — presentation formatting.
- * Notes:
- * - Converts both string and number input to compact currency text.
+ * @fileoverview Форматирование цены для отображения в UI.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Превращает строковое или числовое значение цены в человекочитаемую
+ *   строку с символом доллара и разделителями тысяч (US-локаль).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Util (фронт). Используется в карточках вакаций и на странице деталей.
+ *
+ * Особенности:
+ *   - Принимает string или number, потому что backend возвращает DECIMAL
+ *     как строку (см. модель IVacation.price).
  */
 
-/** Formats price as USD with locale-aware thousands separator. */
+/** Форматирует цену в USD с разделителями тысяч ("$2,500"). */
 export function formatPrice(price: string | number): string {
-    // Normalize to number and format with locale separators.
+    // Приводим значение к числу и форматируем через toLocaleString.
     return `$${Number(price).toLocaleString("en-US", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,

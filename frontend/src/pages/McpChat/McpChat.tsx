@@ -1,8 +1,20 @@
 /**
- * @fileoverview MCP chat page.
- * Layer: Page — question input, MCP answer via API.
- * Notes:
- * - Validates question text and renders markdown response from backend.
+ * @fileoverview Страница MCP-чата (вопрос → markdown-ответ ассистента).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Реализует простую форму «один вопрос → один ответ»: пользователь
+ *   вводит произвольный вопрос о вакациях, ассистент через MCP-инструменты
+ *   читает данные из БД и отвечает markdown-текстом.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages (приватная страница). Использует mcpApi.ask и Zod-схему
+ *   `mcpQuestionSchema` для клиентской валидации длины вопроса.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Управляет state: question, answer, loading, error, fieldErrors.
+ *   - На submit: валидирует Zod, делает запрос, кладёт ответ в state.
+ *   - Ответ рендерится через ReactMarkdown в карточке glass-surface.
+ *   - Различает ошибки валидации (Zod → fieldErrors) и сетевые (Axios → error).
  */
 
 import { useState } from "react";
@@ -16,7 +28,7 @@ import { AxiosError } from "axios";
 import ReactMarkdown from "react-markdown";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** MCP chat form with question input and markdown answer. */
+/** Форма MCP-чата: ввод вопроса и markdown-ответ ассистента. */
 function McpChat() {
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
@@ -28,7 +40,7 @@ function McpChat() {
         e.preventDefault();
         setFieldErrors({}); setError(""); setAnswer("");
         try {
-            // Validate user question before API request.
+            // Валидация Zod-схемой до обращения к API.
             const data = mcpQuestionSchema.parse({ question });
             setLoading(true);
             const response = await mcpApi.ask(data.question);
@@ -72,6 +84,7 @@ function McpChat() {
 
             {error && <Alert type="error" title={error} style={{ marginBottom: 16 }} />}
 
+            {/* Результат: отображаем ответ только после успешного запроса. */}
             {answer && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
                     <Card className="glass-surface" style={{ paddingTop: 24, borderRadius: 16 }}>

@@ -1,50 +1,66 @@
 /**
- * @fileoverview Rate limiting configuration for the Vacanza API.
- * Layer: Config — defines per-endpoint request limits to prevent abuse.
- * Notes:
- * - Uses `express-rate-limit` with standard RFC headers.
- * - Endpoint-specific limiters are composed in `server.ts`.
+ * @fileoverview Конфигурация ограничений по числу запросов (rate limiting).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает четыре middleware-лимитера для разных групп API-эндпоинтов:
+ *   глобальный, аутентификация, AI-рекомендации и MCP. Подключаются в `server.ts`.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Config / защитный слой. Используется для предотвращения злоупотреблений API:
+ *   брутфорс паролей, флуд тяжёлых AI-запросов, перегрузка инфраструктуры.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Создаёт лимитеры на основе `express-rate-limit` со стандартными RFC-заголовками
+ *     (`RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`).
+ *   - Возвращает клиенту JSON-ответ с понятным сообщением при превышении лимита.
+ *   - Лимиты подобраны по чувствительности эндпоинтов:
+ *       * глобальный (1000/15мин)        — мягкий, на весь API;
+ *       * auth (5/15мин)                  — жёсткий, против перебора паролей;
+ *       * recommendations (30/15мин)      — средний, защита AI-нагрузки;
+ *       * mcp (20/15мин)                  — средний, дороже обычного запроса.
  */
 
 import rateLimit from "express-rate-limit";
 
-/** Global rate limit: 1000 requests per 15 minutes across all endpoints. */
+/** Глобальный лимит: 1000 запросов на 15 минут с одного IP по всем эндпоинтам. */
 export const globalRateLimit = rateLimit({
-    // 15-minute rolling window.
+    // Скользящее окно длиной 15 минут.
     windowMs: 15 * 60 * 1000,
-    // Max allowed requests per IP in this window.
+    // Максимально разрешённое количество запросов на IP за окно.
     max: 1000,
-    // Consistent JSON message for client.
+    // Единое JSON-сообщение для клиента при превышении.
     message: { message: "Too many requests, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-/** Auth rate limit: 5 requests per 15 minutes (login/register). */
+/** Лимит для auth-эндпоинтов: 5 запросов на 15 минут (login/register). */
 export const authRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
-    // Auth endpoints need tighter limits to reduce brute-force risk.
+    // На auth ставим жёсткий лимит, чтобы снизить риск перебора паролей.
     message: { message: "Too many login attempts, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-/** AI recommendations rate limit: 30 requests per 15 minutes. */
+/** Лимит для AI-рекомендаций: 30 запросов на 15 минут. */
 export const recommendationsRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 30,
-    // AI endpoints are protected due to higher compute cost.
+    // AI-эндпоинты ограничиваем сильнее, потому что каждый вызов — это
+    // оплачиваемый трафик к OpenAI и нагрузка на CPU.
     message: { message: "Too many AI requests, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
-/** MCP (Model Context Protocol) rate limit: 20 requests per 15 minutes. */
+/** Лимит для MCP-протокола (Model Context Protocol): 20 запросов на 15 минут. */
 export const mcpRateLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 20,
-    // MCP endpoint limits tool-augmented AI traffic.
+    // MCP-эндпоинт обслуживает «инструментальный» AI-трафик, который дороже
+    // обычного API-запроса, поэтому ограничен жёстче.
     message: { message: "Too many MCP requests, please try again later." },
     standardHeaders: true,
     legacyHeaders: false,

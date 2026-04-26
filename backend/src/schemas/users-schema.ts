@@ -1,15 +1,27 @@
 /**
- * @fileoverview User request validation schemas (profile, password).
- * Layer: Schema — Zod schemas for user endpoints.
- * Notes:
- * - Profile schema validates names and normalized email.
- * - Password schema validates current/new/confirm consistency.
+ * @fileoverview Zod-схемы валидации пользовательских эндпоинтов.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает правила для двух операций над аккаунтом пользователя:
+ *     - обновление профиля (имя/фамилия/email);
+ *     - смена пароля (текущий + новый + подтверждение нового).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Schema. Контроллер users парсит body этими схемами перед вызовом
+ *   сервиса, что делает невозможным попадание мусора в БД.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - updateProfileSchema — firstName/lastName (только буквы, 2..50),
+ *     email (формат, lowercase, max 254).
+ *   - changePasswordSchema — currentPassword (>=8), newPassword (8..72,
+ *     политика сложности), confirmPassword + refine на совпадение
+ *     newPassword === confirmPassword.
  */
 
 import { z } from "zod";
 
 export const updateProfileSchema = z.object({
-    // Updated first name.
+    // Новое имя пользователя.
     firstName: z
         .string({ message: "First name is required" })
         .trim()
@@ -17,7 +29,7 @@ export const updateProfileSchema = z.object({
         .max(50, { message: "First name must be at most 50 characters long" })
         .regex(/^[a-zA-Z]+$/, { message: "First name must contain only letters" }),
 
-    // Updated last name.
+    // Новая фамилия пользователя.
     lastName: z
         .string({ message: "Last name is required" })
         .trim()
@@ -25,7 +37,7 @@ export const updateProfileSchema = z.object({
         .max(50, { message: "Last name must be at most 50 characters long" })
         .regex(/^[a-zA-Z]+$/, { message: "Last name must contain only letters" }),
 
-    // Updated email (normalized).
+    // Новый email (нормализован: trim + lowercase).
     email: z.email({ message: "Invalid email address" })
         .trim()
         .toLowerCase()
@@ -33,12 +45,12 @@ export const updateProfileSchema = z.object({
 });
 
 export const changePasswordSchema = z.object({
-    // Existing password for ownership verification.
+    // Текущий пароль — нужен для проверки права на изменение.
     currentPassword: z
         .string({ message: "Current password is required" })
         .min(8, { message: "Current password must be at least 8 characters long" }),
 
-    // New password with complexity rules.
+    // Новый пароль с правилами сложности.
     newPassword: z
         .string({ message: "New password is required" })
         .trim()
@@ -49,10 +61,10 @@ export const changePasswordSchema = z.object({
             { message: "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character" }
         ),
 
-    // Duplicate new password for typo prevention.
+    // Дублирующее поле нового пароля — защита от опечатки.
     confirmPassword: z.string().min(8, { message: "Confirm password must be at least 8 characters long" }),
 
-// Ensure user entered the same new password twice.
+// Финальная проверка: пользователь ввёл новый пароль одинаково в обоих полях.
 }).refine(data => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],

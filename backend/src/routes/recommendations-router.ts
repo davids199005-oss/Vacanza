@@ -1,8 +1,19 @@
 /**
- * @fileoverview Recommendations routes: AI travel advice.
- * Layer: Route — auth required; rate-limited via recommendationsRateLimit in server.
- * Notes:
- * - Endpoint is intentionally POST because it accepts request body payload.
+ * @fileoverview Роут AI-рекомендаций.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Подключает единственный защищённый эндпоинт POST /api/recommendations,
+ *   через который пользователь запрашивает совет от LLM по выбранному направлению.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Route. Сам по себе только связывает URL с обработчиком и навешивает
+ *   authMiddleware. Дополнительный rate-limit (`recommendationsRateLimit`)
+ *   подключается в server.ts на уровне выше — чтобы защитить дорогостоящий
+ *   AI-вызов.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - POST / — генерация рекомендаций (метод POST выбран потому, что
+ *     destination передаётся в теле запроса).
  */
 
 import { Router } from "express";
@@ -11,7 +22,7 @@ import { authMiddleware } from "../middlewares/auth-middleware.ts";
 
 const recommendationsRouter = Router();
 
-// Generate AI recommendation for provided destination.
+// Сгенерировать AI-рекомендацию для указанного направления.
 recommendationsRouter.post('/', authMiddleware, recommendationsController.generateTravelRecommendation);
 
 export default recommendationsRouter;

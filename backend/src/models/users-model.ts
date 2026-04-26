@@ -1,31 +1,41 @@
 /**
- * @fileoverview User domain models.
- * Layer: Domain — interfaces for user entities (with/without password).
- * Notes:
- * - `IUser` represents internal canonical user shape from service/DB layers.
- * - `User` removes sensitive password for API-safe transfer objects.
+ * @fileoverview Доменные модели пользователя.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает две формы сущности «пользователь»:
+ *     - IUser  — полный объект, включая хеш пароля (только для внутреннего слоя/БД).
+ *     - User   — то же самое, но БЕЗ пароля (безопасно отдавать клиенту).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. Сервисы и репозиторий работают с IUser, а контроллеры
+ *   и mapper-утилиты приводят результат к User перед отправкой на клиент.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - IUser — поля id/firstName/lastName/email/password/role/avatar.
+ *   - User  — `Omit<IUser, 'password'>`, страховка от случайной утечки пароля
+ *             в JSON-ответ.
  */
 
 import { Role } from "../enums/roles-enum.ts";
 
-/** Full user including hashed password (DB/internal use). */
+/** Полный пользователь, включая хеш пароля (только для внутренних слоёв и БД). */
 export interface IUser {
-    // Database primary key.
+    // Первичный ключ в таблице users.
     id: number;
-    // User first name.
+    // Имя пользователя.
     firstName: string;
-    // User last name.
+    // Фамилия пользователя.
     lastName: string;
-    // Unique user email (login identifier).
+    // Уникальный email — используется как идентификатор для логина.
     email: string;
-    // Password hash (never plaintext).
+    // Хеш пароля (никогда не plain-text).
     password: string;
-    // Authorization role used by RBAC checks.
+    // Роль пользователя для проверок RBAC (USER / ADMIN).
     role: Role;
-    // Optional avatar filename stored on disk.
+    // Имя файла аватара на диске (или null, если аватар не загружен).
     avatar: string | null;
 
 }
 
-/** User without password (safe for API responses). */
+/** Пользователь без пароля — безопасно отдавать в API-ответах. */
 export type User = Omit<IUser, 'password'>;

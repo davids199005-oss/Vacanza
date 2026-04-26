@@ -1,8 +1,13 @@
 /**
- * @fileoverview Zod schemas for login and registration forms.
- * Layer: Validation — auth form validation.
- * Notes:
- * - Mirrors backend auth validation rules for immediate client feedback.
+ * @fileoverview Zod-схемы валидации форм входа и регистрации.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Дублирует серверные правила auth-схем (длина, regex и т.д.) для
+ *   мгновенной проверки в форме до отправки запроса на backend.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Schema (фронт). Используется страницами Login/Register совместно
+ *   с react-hook-form и zod-resolver.
  */
 
 import { z } from "zod";
@@ -11,7 +16,7 @@ const nameRegex = /^[a-zA-Z]+$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 export const registerSchema = z.object({
-    // First name with basic character/length constraints.
+    // Имя: длина 2..50 и только буквы.
     firstName: z
         .string({ message: "First name is required" })
         .trim()
@@ -19,7 +24,7 @@ export const registerSchema = z.object({
         .max(50, { message: "First name must be at most 50 characters long" })
         .regex(nameRegex, { message: "First name must contain only letters" }),
 
-    // Last name with basic character/length constraints.
+    // Фамилия: длина 2..50 и только буквы.
     lastName: z
         .string({ message: "Last name is required" })
         .trim()
@@ -27,14 +32,14 @@ export const registerSchema = z.object({
         .max(50, { message: "Last name must be at most 50 characters long" })
         .regex(nameRegex, { message: "Last name must contain only letters" }),
 
-    // Normalized email value.
+    // Email: валидация формата + нормализация (trim + lowercase).
     email: z
         .email({ message: "Invalid email address" })
         .trim()
         .toLowerCase()
         .max(254, { message: "Email must be at most 254 characters long" }),
 
-    // Strong password policy for account creation.
+    // Политика сложности пароля при регистрации.
     password: z
         .string({ message: "Password is required" })
         .trim()
@@ -44,13 +49,13 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-    // Email credential.
+    // Email-поле для логина.
     email: z
         .email({ message: "Invalid email address" })
         .trim()
         .toLowerCase(),
 
-    // Password credential.
+    // Пароль для логина.
     password: z
         .string({ message: "Password is required" })
         .trim()

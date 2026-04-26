@@ -1,18 +1,25 @@
 /**
- * @fileoverview Redux root state type.
- * Layer: State — global app state shape.
- * Notes:
- * - Used by `useSelector` typing across components.
+ * @fileoverview Тип корневого Redux-состояния приложения.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает «форму» глобального state, который собирает Redux Store.
+ *   Используется при типизации useSelector, чтобы во всех селекторах
+ *   была одинаковая структура состояния.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой State Management. Это контракт между store и компонентами:
+ *   состоит из трёх независимых сегментов (user, token, vacations),
+ *   каждый из которых обслуживается своим slice'ом.
  */
 
-import { IUser } from "../models/user";
-import { VacationWithLikes } from "../models/vacation";
+import { IUser } from "../models/User";
+import { VacationWithLikes } from "../models/Vacation";
 
 export type AppState = {
-    // Authenticated user profile (or null when logged out).
+    // Авторизация: данные текущего пользователя или null, если не авторизован.
     user: IUser | null;
-    // Active access token.
+    // Авторизация: активный JWT-токен (или null).
     token: string | null;
-    // Cached vacations list with like metadata.
+    // Данные: кеш отпусков с информацией о лайках.
     vacations: VacationWithLikes[];
 };

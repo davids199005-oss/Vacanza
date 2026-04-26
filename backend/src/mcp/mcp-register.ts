@@ -1,9 +1,23 @@
 /**
- * @fileoverview MCP tool registration: registers vacation tools with McpServer.
- * Layer: MCP — wires tool names/schemas to mcpTools implementations.
- * Notes:
- * - Tool names here must match names used by the model/tool-calling.
- * - Input schemas are validated by MCP server before tool execution.
+ * @fileoverview Регистрация MCP-инструментов на сервере.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает, какие именно tools (имена, описания, схемы аргументов) MCP-сервер
+ *   декларирует наружу. Каждый зарегистрированный tool «видит» AI-модель и может
+ *   его вызвать.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой MCP. Связывает декларацию tool (имя + JSON-схема входа) с её
+ *   реализацией из `mcp-tools`. Используется фабрикой `vacanzaMcpServer`.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - getVacationsStats        — без аргументов, отдаёт сводную статистику.
+ *   - getVacationsWithLikes    — без аргументов, отдаёт все вакации с лайками.
+ *   - searchByRegion(region)   — поиск по подстроке в destination.
+ *   - getTopLiked(limit?)      — топ-N лайкнутых, limit ограничен 1..100.
+ *
+ *   Имена tools здесь должны совпадать с теми, которые модель использует при
+ *   tool-calling, иначе вызов не дойдёт до реализации.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -13,7 +27,7 @@ import { mcpTools } from "./mcp-tools.ts";
 class McpRegister {
 
     public registerGetVacationsStatsTool(mcpServer: McpServer): void {
-        // Register tool without input args.
+        // Tool без аргументов: статистика по всему набору вакаций.
         mcpServer.registerTool(
             "getVacationsStats",
             { description: "Get statistics: total count, average price, active/upcoming/past counts" },
@@ -22,7 +36,7 @@ class McpRegister {
     }
 
     public registerGetVacationsWithLikesTool(mcpServer: McpServer): void {
-        // Register list tool without input args.
+        // Tool без аргументов: список вакаций с числом лайков и статусом.
         mcpServer.registerTool(
             "getVacationsWithLikes",
             { description: "Get all vacations with their like counts and status (active/upcoming/past)" },
@@ -31,7 +45,7 @@ class McpRegister {
     }
 
     public registerSearchByRegionTool(mcpServer: McpServer): void {
-        // Register search tool with required `region` argument schema.
+        // Tool с обязательным аргументом `region` (строка для подстрочного поиска).
         mcpServer.registerTool(
             "searchByRegion",
             {
@@ -45,7 +59,7 @@ class McpRegister {
     }
 
     public registerGetTopLikedTool(mcpServer: McpServer): void {
-        // Register top-liked tool with optional bounded `limit`.
+        // Tool с опциональным аргументом `limit` (1..100), по умолчанию 5.
         mcpServer.registerTool(
             "getTopLiked",
             {

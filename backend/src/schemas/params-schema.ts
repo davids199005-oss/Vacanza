@@ -1,12 +1,21 @@
 /**
- * @fileoverview URL params validation schemas.
- * Layer: Schema — reusable ID param validator for route params.
- * Notes:
- * - Accepts numeric strings and coerces to number.
- * - Rejects non-integer and non-positive values.
+ * @fileoverview Универсальная схема валидации числового ID из URL.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Один общий валидатор для всех роутов, где в URL присутствует параметр `:id`
+ *   (например, /api/vacations/:id). Предотвращает попадание в контроллер
+ *   некорректных значений (буквы, отрицательные числа, дроби).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Schema. Используется в большинстве контроллеров: vacations, users.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - z.coerce.number() — приводит строку из URL к числу.
+ *   - .int() — отсекает дробные значения.
+ *   - .positive() — отсекает 0 и отрицательные.
  */
 
 import { z } from "zod";
 
-/** Coerces and validates positive integer ID from route params. */
+/** Принимает строку из params и валидирует её как положительное целое число (id). */
 export const idParamsSchema = z.coerce.number().int().positive({ message: "Invalid ID" });

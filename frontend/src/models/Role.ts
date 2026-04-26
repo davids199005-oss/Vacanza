@@ -1,14 +1,19 @@
 /**
- * @fileoverview Role constants and type for RBAC.
- * Layer: Domain — user role definitions used for authorization.
- * Notes:
- * - Keep values in sync with backend `roles-enum.ts`.
+ * @fileoverview Роли пользователя и тип для RBAC-проверок на фронте.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Дублирует серверный enum ролей для фронтенда. Используется в навигации,
+ *   защищённых маршрутах и проверках доступа компонентов.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Models. Значения должны совпадать с теми, что приходят в JWT-payload
+ *   с сервера; иначе проверка `role === Role.ADMIN` будет ложной.
  */
 
 export const Role: Record<string, string> = {
-    // Regular user role.
+    // Базовая роль обычного пользователя.
     USER: "user",
-    // Administrator role.
+    // Роль администратора с расширенными правами.
     ADMIN: "admin",
 } as const;
 

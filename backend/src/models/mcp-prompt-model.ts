@@ -1,28 +1,40 @@
 /**
- * @fileoverview MCP (Model Context Protocol) AI prompts.
- * Layer: Domain — system and user prompt templates for vacation Q&A.
- * Notes:
- * - System prompt forces data-grounded answers via MCP tools.
- * - User prompt passes raw question text without extra transformation.
+ * @fileoverview Промпты MCP-режима для ответа на вопросы по данным.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Содержит системный и пользовательский промпты для модели OpenAI,
+ *   работающей в режиме Model Context Protocol (MCP). В MCP модель ходит
+ *   не в свою «память», а в наши tools (функции к БД), и формирует ответ
+ *   на их основе.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. Промпты централизованы здесь, чтобы их легко было править
+ *   без правки сервисного кода.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - mcpSystemPrompt   — задаёт системные ограничения: «отвечай по данным,
+ *                          используй tools, будь кратким, не выдумывай».
+ *   - mcpUserPrompt(q)  — заворачивает текст вопроса пользователя в формат
+ *                          ChatCompletionMessageParam без преобразований.
  */
 
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
-/** System prompt instructing the AI to answer using MCP tools. */
+/** Системный промпт: инструктирует AI отвечать с использованием MCP-инструментов. */
 export const mcpSystemPrompt: ChatCompletionMessageParam = {
-    // System role defines assistant operating constraints.
+    // Роль `system` определяет операционные ограничения ассистента.
     role: "system",
-    // Hard constraints: use tool data, be concise, avoid hallucinations.
-    content: `You are a helpful assistant that answers questions about vacation data. 
+    // Жёсткие ограничения: использовать tool-данные, быть лаконичным, не галлюцинировать.
+    content: `You are a helpful assistant that answers questions about vacation data.
     Use the available tools to get data from the database and answer precisely.
     Be concise and clear in your answers.
     Always base your answers on the data from the database.`,
 };
 
-/** Builds user prompt from the question. */
+/** Собирает пользовательский промпт из исходного вопроса. */
 export const mcpUserPrompt = (question: string): ChatCompletionMessageParam => ({
-    // User role contains original question from UI.
+    // Роль `user` несёт исходный вопрос из UI.
     role: "user",
-    // Pass-through content preserves user intent exactly.
+    // Прозрачно прокидываем текст, чтобы не искажать намерение пользователя.
     content: question,
 });

@@ -1,17 +1,26 @@
 /**
- * @fileoverview Admin reports page.
- * Layer: Page — likes chart and CSV export; admin only.
- * Notes:
- * - Builds chart data from vacations list in Redux state.
- * - CSV export reuses shared helper utility.
+ * @fileoverview Админская страница отчётов.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Показывает столбчатую диаграмму «Лайки по направлениям» (Recharts) и
+ *   позволяет скачать данные в CSV-файл одним кликом.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages → admin/. Защищена AdminRoute. Использует кеш `vacations`
+ *   из Redux (если он пуст — подгружает с сервера).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - useEffect: при пустом кеше — GET /api/vacations и заполнение Redux.
+ *   - Преобразует список в формат `{destination, likes}` для Recharts.
+ *   - Кнопка Download CSV вызывает exportToCsv(vacations) из utils.
  */
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { Button, Card, Space, Typography } from "antd";
-import { AppState } from "../../../redux/appState";
-import { vacationsSlice } from "../../../redux/vacationsSlice";
+import { AppState } from "../../../redux/AppState";
+import { vacationsSlice } from "../../../redux/VacationsSlice";
 import { vacationsApi } from "../../../api/vacationsApi";
 import {
   BarChart,
@@ -25,13 +34,13 @@ import {
 import { exportToCsv } from "../../../utils/csvExport";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
-/** Reports page with likes bar chart and CSV export. */
+/** Страница отчётов: столбчатая диаграмма лайков и экспорт CSV. */
 function Reports() {
   const dispatch = useDispatch();
   const vacations = useSelector((state: AppState) => state.vacations);
 
   useEffect(() => {
-    // Load vacations once if report opened before list page.
+    // Подгружаем вакации, если страница отчётов открыта первой и кеш пуст.
     if (vacations.length === 0) {
       vacationsApi
         .getAll()
@@ -41,7 +50,7 @@ function Reports() {
     }
   }, [dispatch, vacations.length]);
 
-  // Recharts expects plain array of serializable objects.
+  // Преобразуем список в формат, ожидаемый Recharts (destination/likes).
   const chartData = vacations.map((v) => ({
     destination: v.destination,
     likes: v.likes,

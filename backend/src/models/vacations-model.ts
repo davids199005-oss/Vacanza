@@ -1,32 +1,44 @@
 /**
- * @fileoverview Vacation domain models.
- * Layer: Domain — interfaces for vacation entities and like counts.
- * Notes:
- * - `IVacation` is the core vacation entity used across API layers.
- * - `VacationWithLikes` extends core entity with social metadata.
+ * @fileoverview Доменные модели отпусков (vacations).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает базовую сущность IVacation и её расширение VacationWithLikes,
+ *   которое уже включает социальные метаданные (число лайков и факт лайка
+ *   текущим пользователем).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. С IVacation работают CRUD-операции и mapper-утилиты,
+ *   а VacationWithLikes возвращается публичным API списком вакаций.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - IVacation        — id, destination, description, даты, цена, image.
+ *   - VacationWithLikes — IVacation + likes (агрегат) + isLiked (для текущего user).
+ *
+ * Особенность поля price: MySQL-драйвер возвращает DECIMAL как строку,
+ * чтобы избежать потери точности — поэтому тип `string`, а не `number`.
  */
 
 export interface IVacation {
-    // Database primary key.
+    // Первичный ключ в таблице vacations.
     id: number;
-    // Destination title shown in cards/lists.
+    // Название направления — выводится в карточке/списке.
     destination: string;
-    // Human-readable trip description.
+    // Подробное описание поездки.
     description: string;
-    // Vacation start date.
+    // Дата начала отпуска.
     startDate: Date;
-    // Vacation end date.
+    // Дата окончания отпуска.
     endDate: Date;
-    // Decimal price serialized as string from MySQL driver.
-    price: string; // MySQL DECIMAL is returned as a string, e.g. "2500.00"
-    // Uploaded vacation image filename.
+    // Цена в виде строки — так MySQL-драйвер отдаёт DECIMAL без потери точности.
+    price: string; // MySQL DECIMAL приходит как строка, например "2500.00".
+    // Имя файла загруженного изображения вакации (хранится на диске).
     image: string;
 }
 
-/** Vacation with like count and current user's like status. */
+/** Вакация с числом лайков и признаком лайка текущим пользователем. */
 export interface VacationWithLikes extends IVacation {
-    // Total number of likes from all users.
+    // Общее количество лайков от всех пользователей.
     likes: number;
-    // Whether currently authenticated user liked this vacation.
+    // Поставил ли лайк текущий аутентифицированный пользователь.
     isLiked: boolean;
 }

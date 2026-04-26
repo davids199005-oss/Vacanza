@@ -1,10 +1,24 @@
 /**
- * @fileoverview Global error handler middleware.
- * Layer: Middleware — maps errors to HTTP responses; BaseError, ZodError, Multer.
- * Notes:
- * - Normalizes different error sources to a stable JSON contract.
- * - Includes debug details only in development mode.
- * - Prioritizes specific handlers (Multer/Zod/BaseError) before unknown fallback.
+ * @fileoverview Глобальный обработчик ошибок API.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Единая точка нормализации любых ошибок, возникающих в любом слое приложения,
+ *   в стабильный JSON-контракт ответа клиенту. Подключается последним в `server.ts`.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Middleware. Контроллеры и сервисы НЕ формируют HTTP-ответ при ошибке —
+ *   они только бросают исключения. Этот middleware гарантирует, что:
+ *     - клиент получит понятный JSON и корректный HTTP-статус;
+ *     - в production не утекут стектрейсы и внутренние сообщения;
+ *     - в development разработчик увидит подробности.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ (в порядке проверок):
+ *   1. multer.MulterError      → 400 (загрузка файла, например, превышен размер).
+ *   2. ошибка фильтра multer   → 400 (неверный формат изображения).
+ *   3. BaseError или ZodError  → status из BaseError или 400 для Zod.
+ *      Дополнительно прикладывает `details` (Zod issues / ValidationError).
+ *   4. Любая другая ошибка     → 500 + лог в консоль.
+ *      В dev добавляются stack/message; в production — только generic-сообщение.
  */
 
 import { BaseError, ValidationError } from "../errors/base-errors.ts";
@@ -15,58 +29,61 @@ import { ZodError } from "zod";
 import multer from "multer";
 import { INVALID_IMAGE_FORMAT_ERROR } from "../utils/multer-util.ts";
 
-/** Handles BaseError, ZodError, MulterError, and unknown errors; returns JSON. */
+/** Обрабатывает BaseError, ZodError, MulterError и неизвестные ошибки; возвращает JSON. */
 export function errorHandlerMiddleware(
     err: unknown,
     _req: Request,
     res: Response,
     _next: NextFunction
 ): void {
-    // Toggle verbose diagnostics only for local/debug environments.
+    // В dev-режиме добавляем подробности (stack/message), в production — нет.
     const isDevelopment = env.NODE_ENV === "development";
 
-    // Multer upload errors (e.g. file too large)
+    // Сначала проверяем узкоспециализированные ошибки (multer, zod, доменные),
+    // и только в самом конце — fallback на «неизвестную ошибку».
+
+    // Ошибки загрузки файлов через multer (например, превышен размер файла).
     if (err instanceof multer.MulterError) {
-        // Return client-safe upload failure response.
+        // Возвращаем безопасный для клиента ответ о неудачной загрузке.
         res.status(StatusCode.BAD_REQUEST).json({
             message: err.message,
-            // Attach extra details only for debugging.
+            // Дополнительные подробности — только для dev-окружения.
             ...(isDevelopment && { details: err.message }),
         });
         return;
     }
-    // Multer file filter rejects invalid image formats
+    // fileFilter multer отверг файл из-за неподходящего формата изображения.
     if (err instanceof Error && err.message === INVALID_IMAGE_FORMAT_ERROR) {
-        // Keep response minimal and explicit for invalid file type.
+        // Минимальный явный ответ о неверном типе файла.
         res.status(StatusCode.BAD_REQUEST).json({
             message: err.message,
         });
         return;
     }
-    // BaseError or Zod validation error
+    // Доменная ошибка нашего приложения или ошибка валидации Zod.
     if (err instanceof BaseError || err instanceof ZodError) {
-        // Use domain status for BaseError; validation defaults to 400.
+        // Для BaseError используем её status, для Zod — стандартный 400.
         res.status(err instanceof BaseError ? err.status : StatusCode.BAD_REQUEST).json({
-            // Use domain message when available; otherwise generic validation label.
+            // Для BaseError берём её сообщение, иначе подставляем общий заголовок.
             message: err instanceof BaseError ? err.message : "Validation error",
-            // Stack is useful in dev and should not leak in production.
+            // Stack полезен в dev, но не должен утекать в production.
             ...(isDevelopment && { stack: err.stack }),
-            // Custom validation details from domain ValidationError.
+            // Подробности кастомной ValidationError из домена.
             ...(err instanceof ValidationError && { details: err.details }),
-            // Zod issues transformed into compact comma-separated details.
+            // Сообщения issues из ZodError склеиваем в одну строку через запятую.
             ...(err instanceof ZodError && { details: err.issues.map(issue => issue.message).join(", ") }),
         });
         return;
     }
-    // Unknown error: 500
+    // Любая неизвестная ошибка → 500.
     else {
-        // Log full unknown error for server-side diagnostics.
+        // Подробно логируем неизвестную ошибку для диагностики на сервере.
         console.error("Unknown error ❌:", err);
 
-        // Return generic message to avoid leaking internals.
+        // Клиенту возвращаем обобщённое сообщение, не раскрывая внутренности.
         res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
             message: "Internal server error",
-            // Optional dev-only detail for faster local debugging.
+            // Опциональные подробности только в dev — ускоряют отладку локально.
             ...(isDevelopment && { details: err instanceof Error ? err.message : String(err) }),
         });
     }

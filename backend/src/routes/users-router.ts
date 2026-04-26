@@ -1,9 +1,22 @@
 /**
- * @fileoverview Users routes: profile, avatar, password, liked vacations.
- * Layer: Route — all routes require authMiddleware.
- * Notes:
- * - `authMiddleware` must run before any controller to populate `req.user`.
- * - Avatar upload uses multer middleware before controller logic.
+ * @fileoverview Роуты управления собственным аккаунтом пользователя.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает приватные роуты /api/users/me/* — все они работают с текущим
+ *   пользователем (взятым из JWT) и поэтому требуют authMiddleware.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Route. Связывает HTTP-методы с контроллером и навешивает
+ *   middleware (auth + multer для аватара).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - GET    /me          — получить профиль.
+ *   - PUT    /me          — обновить профиль (firstName/lastName/email)
+ *                            и получить обновлённый JWT.
+ *   - PATCH  /me/avatar   — загрузить новый аватар (multer "avatar").
+ *   - PATCH  /me/password — сменить пароль с проверкой текущего.
+ *   - GET    /me/likes    — получить список лайкнутых вакаций.
+ *   - DELETE /me          — удалить аккаунт целиком.
  */
 
 import { Router } from "express";
@@ -13,17 +26,17 @@ import { uploadAvatar } from "../utils/multer-util.ts";
 
 const usersRouter = Router();
 
-// Get current authenticated user profile.
+// Получить профиль текущего пользователя.
 usersRouter.get("/me", authMiddleware, usersController.getProfile);
-// Update firstName/lastName/email and return refreshed JWT.
+// Обновить firstName/lastName/email и вернуть обновлённый JWT.
 usersRouter.put("/me", authMiddleware, usersController.updateProfile);
-// Upload and update user avatar file.
+// Загрузить и обновить аватар пользователя.
 usersRouter.patch("/me/avatar", authMiddleware, uploadAvatar, usersController.updateAvatar);
-// Change current password after validating currentPassword.
+// Сменить пароль после проверки currentPassword.
 usersRouter.patch("/me/password", authMiddleware, usersController.changePassword);
-// Get vacations liked by current user.
+// Получить список вакаций, лайкнутых текущим пользователем.
 usersRouter.get("/me/likes", authMiddleware, usersController.getLikedVacations);
-// Delete current user account and related assets.
+// Удалить аккаунт текущего пользователя и связанные ресурсы.
 usersRouter.delete("/me", authMiddleware, usersController.deleteAccount);
 
 export default usersRouter;

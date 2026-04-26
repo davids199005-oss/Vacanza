@@ -1,37 +1,48 @@
 /**
- * @fileoverview JWT authentication middleware.
- * Layer: Middleware — validates Bearer token and attaches req.user.
- * Notes:
- * - Reads `Authorization` header from incoming request.
- * - Expects strict format: `Bearer <jwt>`.
- * - Verifies signature and payload via shared JWT utility.
- * - Stores decoded payload in `req.user` for downstream handlers.
- * - For any error, delegates to global error handler with `next(error)`.
+ * @fileoverview Middleware JWT-аутентификации.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Извлекает Bearer-токен из заголовка Authorization, проверяет его подпись
+ *   и срок действия, а распарсенный payload кладёт в `req.user` для использования
+ *   downstream-обработчиками (контроллерами и middleware ролей).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Middleware. Это ключевой защитный слой API: ставится перед всеми
+ *   приватными роутами. Без валидного токена запрос не дойдёт до контроллера.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   1. Читает заголовок `Authorization` входящего запроса.
+ *   2. Проверяет, что он начинается с `Bearer ` (строгий формат).
+ *   3. Извлекает сам JWT (часть после пробела).
+ *   4. Проверяет подпись и валидность через утилиту `verifyToken`.
+ *   5. Сохраняет распарсенный payload в `req.user`.
+ *   6. На любую ошибку (нет заголовка, токен просрочен, невалиден)
+ *      прокидывает `UnauthorizedError` через `next(error)`.
  */
 
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "../errors/base-errors.ts";
 import { verifyToken } from "../utils/jwt-util.ts";
 
-/** Extracts Bearer token, verifies JWT, sets req.user; throws UnauthorizedError on failure. */
+/** Извлекает Bearer-токен, проверяет JWT, кладёт payload в req.user. */
 export function authMiddleware(req: Request, _res: Response, next: NextFunction): void {
     try {
-        // Read raw Authorization header value.
+        // Считываем «сырое» значение заголовка Authorization.
         const token = req.headers.authorization;
-        // Reject missing header or invalid schema before token parsing.
+        // Ранний выход: заголовка нет или формат не соответствует "Bearer <token>".
         if (!token || !token.startsWith("Bearer ")) {
             throw new UnauthorizedError("Authentication required");
         }
-        // Header format is "Bearer <token>", so index 1 is actual JWT string.
+        // Формат заголовка — "Bearer <token>", элемент с индексом 1 — сам JWT.
         const tokenValue = token.split(" ")[1];
-        // Validate token integrity and decode payload (id, email, role, etc.).
+        // Проверяем целостность токена и достаём payload (id, email, role и т.п.).
         const decoded = verifyToken(tokenValue);
-        // Persist user context on request for controller/service authorization logic.
+        // Сохраняем контекст пользователя на запросе для авторизационной логики ниже по цепочке.
         req.user = decoded;
-        // Continue request pipeline.
+        // Передаём управление следующему обработчику.
         next();
     } catch (error) {
-        // Forward auth failures (expired/invalid token) to centralized handler.
+        // Сбои аутентификации (просрочка/невалидная подпись) идут в централизованный обработчик.
         next(error);
     }
 }

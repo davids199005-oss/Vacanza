@@ -1,9 +1,21 @@
 /**
- * @fileoverview MySQL database connection pool.
- * Layer: Config — provides a shared pool for all DB operations.
- * Notes:
- * - Pool is created once and reused across services.
- * - All credentials come from validated `env`.
+ * @fileoverview Конфигурация подключения к MySQL.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Создаёт единый пул соединений (`mysql2/promise` connection pool) с базой данных
+ *   и предоставляет функцию ожидания готовности БД (`waitForDb`) при старте сервера.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Config (инфраструктура). Все слои Service используют общий пул `db` для
+ *   выполнения SQL-запросов — это исключает создание лишних соединений и обеспечивает
+ *   контролируемое количество одновременных подключений к серверу MySQL.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   1. Импортирует валидированные переменные окружения из `env-validator`.
+ *   2. Создаёт пул соединений с параметрами host/port/user/password/database.
+ *   3. Экспортирует пул `db` как singleton для использования сервисами.
+ *   4. Реализует `waitForDb()` с экспоненциальным повтором попыток —
+ *      нужно потому, что в Docker-окружении MySQL стартует медленнее, чем Node.
  */
 
 import { env } from "./env-validator.ts";
@@ -11,17 +23,17 @@ import mysql from "mysql2/promise";
 
 
 
-/** Shared MySQL connection pool. */
+/** Общий пул соединений MySQL, используемый всеми сервисами приложения. */
 export const db = mysql.createPool({
-  // Database host/IP.
+  // Хост (адрес) сервера базы данных.
   host: env.MYSQL_HOST,
-  // Database TCP port.
+  // TCP-порт сервера MySQL.
   port: env.MYSQL_PORT,
-  // Database user.
+  // Имя пользователя, под которым выполняется подключение.
   user: env.MYSQL_USER,
-  // Database password.
+  // Пароль пользователя БД.
   password: env.MYSQL_PASSWORD,
-  // Default schema/database name.
+  // Имя схемы (базы данных), используемой по умолчанию.
   database: env.MYSQL_DATABASE
 
 
@@ -29,6 +41,18 @@ export const db = mysql.createPool({
 
 
 
+/**
+ * Ожидает готовности базы данных перед запуском HTTP-сервера.
+ *
+ * Зачем нужно: при запуске через docker-compose контейнер БД может ещё
+ * не успеть полностью инициализироваться к моменту старта Node-сервиса.
+ * Функция выполняет ping в цикле с задержкой и завершается успехом, как
+ * только удаётся получить рабочее соединение, либо пробрасывает ошибку
+ * после исчерпания всех попыток.
+ *
+ * @param retries  Максимальное число попыток (по умолчанию 12).
+ * @param delayMs  Задержка между попытками в миллисекундах (по умолчанию 2000).
+ */
 async function waitForDb(retries = 12, delayMs = 2000): Promise<void> {
   for (let i = 1; i <= retries; i++) {
     try {
@@ -38,7 +62,10 @@ async function waitForDb(retries = 12, delayMs = 2000): Promise<void> {
       console.log("Database connected successfully ✅");
       return;
     } catch (error) {
+      // На последней попытке пробрасываем ошибку наружу — пусть стартовый код
+      // решит, как реагировать (как правило, краш процесса с понятным логом).
       if (i === retries) throw error;
+      // Между попытками ждём `delayMs`, чтобы дать БД время подняться.
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }

@@ -1,9 +1,23 @@
 /**
- * @fileoverview Vacations controller: CRUD, likes.
- * Layer: Controller — auth/admin where needed; delegates to vacationsService.
- * Notes:
- * - Input is validated before service calls.
- * - File existence checks are handled here for clearer client errors.
+ * @fileoverview Контроллер вакаций: CRUD и лайки.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   HTTP-обработчики для всех операций над вакациями. Часть из них (CRUD)
+ *   требует роли admin (это контролируется в роутере), часть — обычной
+ *   аутентификации (лайки, чтение списка).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Controller. Парсит входные данные через Zod, проверяет наличие
+ *   файла изображения для add (он обязателен) и для update (опционален),
+ *   и делегирует операции vacationsService.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ (по методам):
+ *   - getAllVacations — отдаёт список вакаций с лайками и isLiked.
+ *   - addVacation     — принимает файл (обязательный) + поля формы; 201 + объект.
+ *   - updateVacation  — id из params; новый файл опционален; 200 + объект.
+ *   - deleteVacation  — id из params; 204 No Content.
+ *   - addLike         — vacationId из params; идемпотентно (INSERT IGNORE).
+ *   - removeLike      — vacationId из params; «безопасно», даже если лайка не было.
  */
 
 import { Request, Response, NextFunction } from "express";
@@ -16,6 +30,7 @@ import { idParamsSchema } from "../schemas/params-schema.ts";
 class VacationsController {
     constructor() {
 
+        // bind методов, чтобы можно было передавать их в роутер по ссылке.
         this.getAllVacations = this.getAllVacations.bind(this);
         this.addVacation = this.addVacation.bind(this);
         this.updateVacation = this.updateVacation.bind(this);
@@ -27,7 +42,7 @@ class VacationsController {
     public async getAllVacations(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const userId = req.user!.id;
-            // Service enriches list with likes + current user isLiked flag.
+            // Сервис обогащает список количеством лайков и флагом isLiked для текущего user.
             const vacations = await vacationsService.getAllVacations(userId);
             res.status(StatusCode.OK).json(vacations);
         } catch (error) {
@@ -37,12 +52,12 @@ class VacationsController {
 
     public async addVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // Image is mandatory for creating a new vacation.
+            // Изображение обязательно при создании новой вакации.
             if (!req.file) {
                 throw new BadRequestError("Image is required");
             }
             const imageName = req.file.filename;
-            // Validate destination/description/dates/price.
+            // Валидируем destination/description/dates/price.
             const dto = addVacationSchema.parse(req.body);
             const vacation = await vacationsService.addVacation(dto, imageName);
             res.status(StatusCode.CREATED).json(vacation);
@@ -53,11 +68,11 @@ class VacationsController {
 
     public async updateVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // Parse and validate route id.
+            // Парсим и валидируем id из URL.
             const id = idParamsSchema.parse(req.params.id);
-            // Image is optional on update.
+            // При обновлении файл опционален (можно поменять только текстовые поля).
             const imageName = req.file?.filename;
-            // Validate editable fields.
+            // Валидируем редактируемые поля.
             const dto = updateVacationSchema.parse(req.body);
             const vacation = await vacationsService.updateVacation(id, dto, imageName);
             res.status(StatusCode.OK).json(vacation);
@@ -69,7 +84,7 @@ class VacationsController {
     public async deleteVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const id = idParamsSchema.parse(req.params.id);
-            // Service deletes DB row and image file from disk.
+            // Сервис удаляет и строку из БД, и связанный файл изображения.
             await vacationsService.deleteVacation(id);
             res.status(StatusCode.NO_CONTENT).send();
         } catch (error) {
@@ -81,7 +96,7 @@ class VacationsController {
         try {
             const userId = req.user!.id;
             const vacationId = idParamsSchema.parse(req.params.vacationId);
-            // Service operation is idempotent (INSERT IGNORE).
+            // Операция идемпотентна — повторный лайк не вызовет ошибку.
             await vacationsService.addLike(userId, vacationId);
             res.status(StatusCode.OK).send();
         } catch (error) {
@@ -93,7 +108,7 @@ class VacationsController {
         try {
             const userId = req.user!.id;
             const vacationId = idParamsSchema.parse(req.params.vacationId);
-            // Remove association if exists (safe when already absent).
+            // Снимаем лайк, если он был. Если его не было — ничего не сломается.
             await vacationsService.removeLike(userId, vacationId);
             res.status(StatusCode.OK).send();
         } catch (error) {

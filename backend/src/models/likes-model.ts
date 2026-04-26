@@ -1,14 +1,22 @@
 /**
- * @fileoverview Like domain model (user-vacation association).
- * Layer: Domain — represents a like record in the database.
- * Notes:
- * - One record means one user liked one vacation.
- * - Pair `(userId, vacationId)` should be unique at DB level.
+ * @fileoverview Модель лайка (связь user ↔ vacation).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает запись в таблице лайков: какой пользователь лайкнул какую вакацию.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain. Используется в сервисах vacations при добавлении/удалении
+ *   лайка и при подсчёте агрегатов (сколько лайков у вакации).
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Объявляет интерфейс ILike с двумя внешними ключами.
+ *   - На уровне БД пара `(userId, vacationId)` ограничивается уникальным индексом,
+ *     чтобы один пользователь не мог лайкнуть одну вакацию дважды.
  */
 
 export interface ILike {
-    // User foreign key.
+    // Внешний ключ на пользователя (users.id).
     userId: number;
-    // Vacation foreign key.
+    // Внешний ключ на вакацию (vacations.id).
     vacationId: number;
 }

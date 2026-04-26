@@ -1,9 +1,23 @@
 /**
- * @fileoverview Auth controller: register and login endpoints.
- * Layer: Controller — validates input, delegates to authService, returns JWT.
- * Notes:
- * - Controller contains no DB logic; it only orchestrates request flow.
- * - Validation errors and domain errors are forwarded to error middleware.
+ * @fileoverview Контроллер аутентификации (register / login).
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   HTTP-обработчики для регистрации нового аккаунта и логина существующего.
+ *   Контроллер сам не лезет в БД — он только парсит запрос Zod-схемой и
+ *   делегирует работу сервису.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Controller. Связующее звено между HTTP-уровнем (express) и слоем
+ *   Service. Все ошибки прокидываются в `next(error)` для централизованной
+ *   обработки в errorHandlerMiddleware.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - register: парсит body через registerSchema, вызывает authService.register,
+ *     возвращает 201 Created + { token }.
+ *   - login:    парсит body через loginSchema, вызывает authService.login,
+ *     возвращает 200 OK + { token }.
+ *   - В конструкторе bind методов фиксирует контекст this — это нужно,
+ *     потому что они передаются в роутер по ссылке и без bind теряют this.
  */
 
 import { Request, Response, NextFunction } from "express";
@@ -15,31 +29,33 @@ import { StatusCode } from "../enums/status-codes-enum.ts";
 
 class AuthController {
     constructor() {
+        // bind фиксирует контекст this, чтобы методы можно было передать как
+        // обработчики роута без потери ссылки на экземпляр класса.
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
     }
 
-    // Register a new account and return access token.
+    // Регистрирует новый аккаунт и возвращает access-токен.
     public async register(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // Validate and normalize request body.
+            // Валидация и нормализация тела запроса.
             const data = registerSchema.parse(req.body);
-            // Delegate account creation + token issuance.
+            // Делегируем создание аккаунта и выдачу токена сервису.
             const token = await authService.register(data);
-            // Return token for frontend session bootstrap.
+            // Возвращаем токен — фронтенд сразу авторизует пользователя.
             res.status(StatusCode.CREATED).json({ token });
         } catch (error) {
-            // Delegate any failure to centralized error handler.
+            // Любую ошибку отдаём централизованному error-handler.
             next(error);
         }
     }
 
-    // Authenticate user and return access token.
+    // Аутентифицирует пользователя и возвращает access-токен.
     public async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // Validate credentials payload.
+            // Валидируем payload учётных данных.
             const data = loginSchema.parse(req.body);
-            // Delegate auth verification + token issuance.
+            // Делегируем проверку и выдачу токена сервису.
             const token = await authService.login(data);
             res.status(StatusCode.OK).json({ token });
         } catch (error) {

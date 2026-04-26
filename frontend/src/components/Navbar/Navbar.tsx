@@ -1,9 +1,22 @@
 /**
- * @fileoverview Main app navbar for authenticated users.
- * Layer: Layout — nav links, avatar, logout; admin links when role is admin.
- * Notes:
- * - Shows role-aware links (admin links for admin users only).
- * - Clears all auth-related state on logout.
+ * @fileoverview Основная навигационная панель приложения.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Отрисовывает шапку для авторизованных пользователей: бренд, набор ссылок
+ *   (Vacations, AI Recommendations, MCP Chat, и админские пункты для роли admin),
+ *   аватар-кнопку профиля и кнопку выхода.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Components. Часть Layout-обёртки. Содержит логику logout:
+ *   очищает Redux-state (user/token/vacations) и стирает токен из localStorage.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - При маунте делает запрос GET /users/me, чтобы достать актуальный аватар
+ *     (он не входит в JWT-payload).
+ *   - Формирует список ссылок навигации, добавляя админские пункты для admin.
+ *   - Реализует handleLogout: dispatch logoutUser/logoutToken/clearVacations,
+ *     удаление токена и редирект на /login.
+ *   - Стилизует активную ссылку (NavLink isActive) через getNavLinkStyle.
  */
 
 import { useState, useEffect, type CSSProperties } from "react";
@@ -11,12 +24,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Layout, Button, Avatar, Space, Typography } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
-import { userSlice } from "../../redux/userSlice";
-import { tokenSlice } from "../../redux/tokenSlice";
-import { vacationsSlice } from "../../redux/vacationsSlice";
+import { AppState } from "../../redux/AppState";
+import { userSlice } from "../../redux/UserSlice";
+import { tokenSlice } from "../../redux/TokenSlice";
+import { vacationsSlice } from "../../redux/VacationsSlice";
 import { usersApi } from "../../api/usersApi";
-import { Role } from "../../models/role";
+import { Role } from "../../models/Role";
 import {
   AVATAR_BASE_URL,
   ROUTES,
@@ -27,7 +40,7 @@ import { buttonHover, buttonTap, fadeIn } from "../../ui/motion";
 const { Header } = Layout;
 const { Text } = Typography;
 
-/** Navbar with nav links, auth avatar, and logout. */
+/** Navbar: ссылки навигации, аватар авторизованного пользователя и кнопка выхода. */
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,7 +49,7 @@ function Navbar() {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch fresh avatar reference for header display.
+    // При маунте: догружаем актуальный аватар, потому что в JWT его нет.
     usersApi
       .getProfile()
       .then((res) => setAvatar(res.data.avatar))
@@ -44,7 +57,7 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    // Clear all auth and cached vacation state.
+    // Logout: очищаем auth-состояние и локальный кеш вакаций, удаляем токен из localStorage.
     dispatch(userSlice.actions.logoutUser());
     dispatch(tokenSlice.actions.logoutToken());
     dispatch(vacationsSlice.actions.clearVacations());
@@ -52,7 +65,7 @@ function Navbar() {
     navigate(ROUTES.login);
   };
 
-  // Build navbar links dynamically by role.
+  // Список ссылок: базовый набор для всех + дополнительные для admin.
   const navLinks = [
     { to: ROUTES.vacations, label: "Vacations" },
     { to: ROUTES.recommendations, label: "AI Recommendations" },
@@ -65,7 +78,7 @@ function Navbar() {
       : []),
   ];
 
-  // Shared active/inactive visual styles for route links.
+  // Единая схема стилей активной/неактивной ссылки навигации.
   const getNavLinkStyle = (isActive: boolean): CSSProperties => ({
     fontSize: 14,
     fontWeight: isActive ? 600 : 500,

@@ -1,24 +1,36 @@
 /**
- * @fileoverview JWT payload model for decoded access tokens.
- * Layer: Domain — defines the shape of authenticated user data in tokens.
- * Notes:
- * - This payload is signed into JWT on login/register.
- * - The same shape is attached to `req.user` after token verification.
+ * @fileoverview Модель payload JWT-токена.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Описывает структуру данных, которая подписывается в JWT при логине/регистрации
+ *   и распарсивается обратно в auth-middleware. Это «контракт» между сервером и
+ *   токеном, который циркулирует у клиента.
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Domain (modeling). Используется:
+ *     - jwt-util при подписи и верификации токена;
+ *     - authMiddleware при заполнении `req.user`;
+ *     - request-user.d.ts для типизации `Express.Request`.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - Объявляет интерфейс JwtPayload с полями id/email/role/firstName/lastName.
+ *   - Поля выбраны минимальными, но достаточными для авторизации без обращения
+ *     к БД при каждом запросе (RBAC, отображение имени, отправка ответов от лица user).
  */
 
 import { Role } from "../enums/roles-enum.ts";
 
-/** Payload embedded in JWT; attached to req.user after auth middleware. */
+/** Payload, зашиваемый в JWT и доступный в req.user после auth-middleware. */
 export interface JwtPayload {
-    // Authenticated user id.
+    // Идентификатор аутентифицированного пользователя.
     id: number;
-    // Authenticated user email.
+    // Email аутентифицированного пользователя (используется как идентификатор для логина).
     email: string;
-    // Authenticated user role (for RBAC).
+    // Роль для проверок RBAC (USER / ADMIN).
     role: Role;
-    // First name used by client UI/profile.
+    // Имя пользователя — отображается в UI (профиль, навбар).
     firstName: string;
-    // Last name used by client UI/profile.
+    // Фамилия пользователя — отображается в UI.
     lastName: string;
-    
+
 }

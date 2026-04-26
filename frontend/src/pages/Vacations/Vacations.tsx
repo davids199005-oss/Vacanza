@@ -1,19 +1,32 @@
 /**
- * @fileoverview Vacations list page.
- * Layer: Page — fetch, filter, paginate, like toggle.
- * Notes:
- * - Uses Redux as cache to avoid unnecessary refetch.
- * - Applies filters and pagination on client side.
+ * @fileoverview Страница списка вакаций с фильтрами и пагинацией.
+ *
+ * НАЗНАЧЕНИЕ ФАЙЛА:
+ *   Главная страница каталога: показывает все вакации в виде сетки карточек
+ *   VacationCard, поддерживает 4 фильтра (All / Liked / Active / Upcoming)
+ *   и постраничный вывод (9 карточек на страницу).
+ *
+ * РОЛЬ В АРХИТЕКТУРЕ:
+ *   Слой Pages (приватная). Использует Redux-кэш `vacations`: загружает
+ *   список с сервера только при пустом кеше, фильтрует/пагинирует на клиенте.
+ *
+ * ЧТО ИМЕННО ДЕЛАЕТ:
+ *   - useEffect: при пустом кеше делает GET /api/vacations и кладёт в Redux.
+ *   - useMemo для filteredVacations: пересчитывает список под выбранный фильтр.
+ *   - Локальный state: filter (вкладка), page (текущая страница), loading, error.
+ *   - handleLikeToggle: оптимистично переключает лайк — сперва запрос,
+ *     потом dispatch toggleLike.
+ *   - Рендерит Spin при загрузке, Alert при ошибке, иначе сетку + пагинацию.
  */
 
 import { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Typography, Row, Col, Spin, Alert, Space } from "antd";
 import { motion } from "framer-motion";
-import { AppState } from "../../redux/appState";
-import { vacationsSlice } from "../../redux/vacationsSlice";
+import { AppState } from "../../redux/AppState";
+import { vacationsSlice } from "../../redux/VacationsSlice";
 import { vacationsApi } from "../../api/vacationsApi";
-import VacationCard from "../../components/VacationCard/vacationCard";
+import VacationCard from "../../components/VacationCard/VacationCard";
 import { AxiosError } from "axios";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
@@ -26,7 +39,7 @@ const filters: { key: FilterType; label: string }[] = [
   { key: "upcoming", label: "Upcoming" },
 ];
 
-/** Vacations list with filters (all, liked, active, upcoming) and pagination. */
+/** Список вакаций с фильтрами (all/liked/active/upcoming) и пагинацией. */
 function Vacations() {
   const dispatch = useDispatch();
   const vacations = useSelector((state: AppState) => state.vacations);
@@ -35,7 +48,7 @@ function Vacations() {
   const [loading, setLoading] = useState(vacations.length === 0);
   const [error, setError] = useState("");
 
-  // Fetch once when cache is empty.
+  // Грузим список с сервера только при пустом кеше — иначе используем уже сохранённый.
   useEffect(() => {
     if (vacations.length === 0) {
       vacationsApi
@@ -49,7 +62,7 @@ function Vacations() {
   }, [dispatch, vacations.length]);
 
   const filteredVacations = useMemo(() => {
-    // Derive filtered list from active tab.
+    // Фильтрация: формируем список в зависимости от выбранной вкладки.
     const now = new Date();
     switch (filter) {
       case "liked":
@@ -73,7 +86,8 @@ function Vacations() {
 
   const handleLikeToggle = async (vacationId: number, isLiked: boolean) => {
     try {
-      // Toggle on server, then sync local Redux state.
+      // Сначала отправляем запрос на сервер, и только при успехе обновляем Redux —
+      // иначе в случае ошибки UI был бы рассинхронизирован с реальным состоянием БД.
       if (isLiked) await vacationsApi.removeLike(vacationId);
       else await vacationsApi.addLike(vacationId);
       dispatch(
