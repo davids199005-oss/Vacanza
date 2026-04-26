@@ -45,8 +45,6 @@ export const VACATION_IMAGE_BASE_URL = `${ASSETS_BASE_URL}/vacations`;
 export const TOKEN_STORAGE_KEY = "token";
 // Список разрешённых MIME-типов для атрибута accept input[type=file].
 export const IMAGE_FILE_ACCEPT = "image/jpeg,image/png,image/webp";
-// Размер страницы пагинации списка вакаций.
-export const VACATIONS_ITEMS_PER_PAGE = 9;
 
 // Маршруты SPA — используются роутером и ссылками интерфейса.
 export const ROUTES = {
