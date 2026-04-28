@@ -1,4 +1,4 @@
-/* Назначение файла: точка подключения глобальных CSS-слоев приложения. */
+
 
 @import "@fontsource-variable/inter";
 @import "./ui/tokens.css";

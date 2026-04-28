@@ -1,14 +1,4 @@
-/**
- * @fileoverview Упрощённая шапка для публичных страниц (Login/Register/Landing).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Отрисовывает минимальный header с одной только ссылкой-брендом.
- *   Нет навигационных пунктов, нет блока пользователя — потому что эти
- *   страницы доступны и неавторизованным посетителям.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Components. Используется на страницах Auth и Landing.
- */
+
 
 import { NavLink } from "react-router-dom";
 import { Layout } from "antd";
@@ -16,7 +6,7 @@ import { ROUTES } from "../../config/appConfig";
 
 const { Header } = Layout;
 
-/** Минимальный navbar только с брендом. */
+
 function SimpleNavbar() {
   return (
     <Header
@@ -50,7 +40,7 @@ function SimpleNavbar() {
         <span className="accent-gradient-text">Vacanza</span>
       </NavLink>
 
-      {/* Намеренно минимально: только ссылка-бренд, без пунктов и user-блока. */}
+      {}
     </Header>
   );
 }

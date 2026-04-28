@@ -1,19 +1,4 @@
-/**
- * @fileoverview Админская страница отчётов.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Показывает столбчатую диаграмму «Лайки по направлениям» (Recharts) и
- *   позволяет скачать данные в CSV-файл одним кликом.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages → admin/. Защищена AdminRoute. Использует кеш `vacations`
- *   из Redux (если он пуст — подгружает с сервера).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - useEffect: при пустом кеше — GET /api/vacations и заполнение Redux.
- *   - Преобразует список в формат `{destination, likes}` для Recharts.
- *   - Кнопка Download CSV вызывает exportToCsv(vacations) из utils.
- */
+
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,13 +19,13 @@ import {
 import { exportToCsv } from "../../../utils/csvExport";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
-/** Страница отчётов: столбчатая диаграмма лайков и экспорт CSV. */
+
 function Reports() {
   const dispatch = useDispatch();
   const vacations = useSelector((state: AppState) => state.vacations);
 
   useEffect(() => {
-    // Подгружаем вакации, если страница отчётов открыта первой и кеш пуст.
+    
     if (vacations.length === 0) {
       vacationsApi
         .getAll()
@@ -50,7 +35,7 @@ function Reports() {
     }
   }, [dispatch, vacations.length]);
 
-  // Преобразуем список в формат, ожидаемый Recharts (destination/likes).
+  
   const chartData = vacations.map((v) => ({
     destination: v.destination,
     likes: v.likes,

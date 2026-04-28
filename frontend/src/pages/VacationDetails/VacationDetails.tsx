@@ -1,22 +1,4 @@
-/**
- * @fileoverview Страница детального просмотра одной вакации.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Открывается по маршруту /vacations/:id. Показывает крупное изображение,
- *   статус (Active/Upcoming/Completed), даты, длительность, описание и
- *   кнопку лайка.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages (приватная). Берёт сущность из Redux-кеша по id; если кеш
- *   ещё пуст, делает GET /api/vacations и заполняет его.
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - useParams → берёт :id из URL и приводит к числу.
- *   - useMemo → выбирает нужную вакацию из state.vacations.
- *   - useEffect → загружает список, если кеш пуст.
- *   - getStatus() → вычисляет статус поездки по текущей дате.
- *   - handleLikeToggle → запрос на сервер + dispatch toggleLike.
- */
+
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -32,7 +14,7 @@ import { VACATION_IMAGE_BASE_URL, ROUTES } from "../../config/appConfig";
 import { AxiosError } from "axios";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** Страница деталей вакации: статус, даты, описание и кнопка лайка. */
+
 function VacationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,7 +31,7 @@ function VacationDetails() {
 
   const loading = vacations.length === 0 && !error;
 
-  // Если кеш вакаций пуст — подгружаем список с сервера, иначе используем уже сохранённый.
+  
   useEffect(() => {
     if (vacations.length !== 0) return;
 
@@ -64,7 +46,7 @@ function VacationDetails() {
   const handleLikeToggle = async () => {
     if (!vacation) return;
     try {
-      // Сначала меняем лайк на сервере, затем синхронно обновляем Redux-state.
+      
       if (vacation.isLiked) await vacationsApi.removeLike(vacation.id);
       else await vacationsApi.addLike(vacation.id);
       const newLiked = !vacation.isLiked;
@@ -81,7 +63,7 @@ function VacationDetails() {
   };
 
   const getStatus = () => {
-    // Вычисляем статус (Completed/Active/Upcoming) по текущей дате.
+    
     if (!vacation) return null;
     const now = new Date();
     const start = new Date(vacation.startDate);
@@ -148,7 +130,7 @@ function VacationDetails() {
 
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 24px" }}>
-      {/* Кнопка возврата на список вакаций. */}
+      {}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -169,7 +151,7 @@ function VacationDetails() {
         </motion.div>
       </motion.div>
 
-      {/* Большое cover-изображение с overlay (название, статус, цена). */}
+      {}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -201,7 +183,7 @@ function VacationDetails() {
           }}
         />
 
-        {/* Overlay content */}
+        {}
         <div style={{ position: "absolute", bottom: 24, left: 28, right: 28 }}>
           <div
             style={{
@@ -247,7 +229,7 @@ function VacationDetails() {
         </div>
       </motion.div>
 
-      {/* Подробности: даты, длительность, описание, число лайков. */}
+      {}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -258,7 +240,7 @@ function VacationDetails() {
           className="glass-surface"
           style={{ borderRadius: 16, padding: 28, marginBottom: 24 }}
         >
-          {/* Dates row */}
+          {}
           <div
             style={{
               display: "flex",
@@ -342,7 +324,7 @@ function VacationDetails() {
             </div>
           </div>
 
-          {/* Description */}
+          {}
           <Typography.Title
             level={4}
             style={{ color: "var(--text-primary)", marginBottom: 12 }}
@@ -362,7 +344,7 @@ function VacationDetails() {
         </div>
       </motion.div>
 
-      {/* Like button */}
+      {}
       <motion.div
         initial="hidden"
         animate="visible"

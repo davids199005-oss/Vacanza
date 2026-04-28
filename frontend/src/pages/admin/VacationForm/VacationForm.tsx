@@ -1,25 +1,4 @@
-/**
- * @fileoverview Админская форма создания и редактирования вакации.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Универсальный компонент для двух режимов:
- *     - "add"  — без params, добавляет новую вакацию;
- *     - "edit" — с params.id, редактирует существующую.
- *   В каждом режиме применяется своя Zod-схема (правила дат отличаются).
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages → admin/. Защищена AdminRoute.
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - useEffect #1: в режиме edit при пустом кеше — GET всего списка вакаций,
- *     чтобы достать конкретную по id.
- *   - useEffect #2: при появлении сущности в кеше — заполняет state формы
- *     текущими значениями (даты обрезает до YYYY-MM-DD).
- *   - handleSubmit: применяет соответствующую Zod-схему, проверяет наличие
- *     файла (для add — обязателен), формирует FormData и вызывает
- *     vacationsApi.update / vacationsApi.add. После — перечитывает список
- *     и редиректит на /admin/vacations.
- */
+
 
 import { useState, useEffect, FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -42,7 +21,7 @@ import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
 const { TextArea } = Input;
 
-/** Форма добавления/редактирования вакации; схема зависит от режима (add или update). */
+
 function VacationForm() {
   const { id } = useParams();
   const isEdit = Boolean(id);
@@ -62,7 +41,7 @@ function VacationForm() {
   const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    // В режиме редактирования: если кеш вакаций пуст, грузим его с сервера.
+    
     if (isEdit && vacations.length === 0) {
       vacationsApi
         .getAll()
@@ -72,7 +51,7 @@ function VacationForm() {
   }, [isEdit, vacations.length, dispatch]);
 
   useEffect(() => {
-    // Заполняем поля формы данными выбранной вакации (даты — до YYYY-MM-DD).
+    
     if (isEdit && id) {
       const v = vacations.find((v) => v.id === Number(id));
       if (v) {
@@ -91,7 +70,7 @@ function VacationForm() {
     setFieldErrors({});
     setError("");
     try {
-      // Валидация Zod-схемой; для add и edit правила дат отличаются.
+      
       (isEdit ? updateVacationSchema : addVacationSchema).parse({
         destination,
         description,
@@ -105,14 +84,14 @@ function VacationForm() {
         return;
       }
     }
-    // Для add файл изображения обязателен (для edit — нет, можно оставить старый).
+    
     if (!isEdit && !image) {
       setFieldErrors({ image: "Image is required" });
       return;
     }
 
     setLoading(true);
-    // Собираем multipart/form-data payload для backend (там Multer ожидает поле "image").
+    
     const fd = new FormData();
     fd.append("destination", destination);
     fd.append("description", description);

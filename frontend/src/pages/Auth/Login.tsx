@@ -1,25 +1,4 @@
-/**
- * @fileoverview Страница входа (Login).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Форма ввода email/пароля. После успешной аутентификации сохраняет
- *   токен в localStorage, кладёт его и распарсенный профиль в Redux,
- *   и редиректит пользователя на /vacations (или /admin/vacations для админа).
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages. Публичная страница (без ProtectedRoute). Выполняет
- *   единственный «привилегированный» переход — превращает учётные данные
- *   в активную сессию.
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - Управляет локальным state: email, password, fieldErrors, error, loading.
- *   - Валидирует ввод через Zod (loginSchema) до отправки на сервер.
- *   - При успехе: localStorage.setItem(token), dispatch(initToken/initUser).
- *   - При ошибке Axios — показывает сообщение от сервера; при ошибке Zod —
- *     заполняет fieldErrors для подсветки полей.
- *   - useEffect: если пользователь уже залогинен (зашёл по ссылке /login),
- *     уводит его на нужный маршрут — без рендера формы.
- */
+
 
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -40,7 +19,7 @@ import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/appConfig";
 import backgroundImg from "../../assets/landing5.jpeg";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
-/** Форма логина с Zod-валидацией и редиректом. */
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +30,7 @@ function Login() {
   const navigate = useNavigate();
   const user = useSelector((state: AppState) => state.user);
 
-  // Если пользователь уже авторизован — уводим на нужную страницу (без формы).
+  
   useEffect(() => {
     if (user)
       navigate(
@@ -64,12 +43,12 @@ function Login() {
     setFieldErrors({});
     setError("");
     try {
-      // Валидация формы Zod-схемой до запроса на сервер.
+      
       const data = loginSchema.parse({ email, password });
       setLoading(true);
       const response = await authApi.login(data);
       const token = response.data.token;
-      // Сохраняем токен в localStorage и синхронизируем Redux-состояние.
+      
       localStorage.setItem(TOKEN_STORAGE_KEY, token);
       dispatch(tokenSlice.actions.initToken(token));
       dispatch(userSlice.actions.initUser(jwtDecode(token)));

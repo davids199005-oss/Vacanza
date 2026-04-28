@@ -1,26 +1,9 @@
-/**
- * @fileoverview Централизованная тема Ant Design для приложения.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Один объект ThemeConfig, который передаётся в `<ConfigProvider>`
- *   в `main.tsx`. Управляет цветами, типографикой, скруглениями и точечными
- *   переопределениями отдельных компонентов AntD.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой UI. Все остальные стили (CSS-переменные, утилиты, motion-пресеты)
- *   гармонируют с этой темой. Изменение здесь автоматически перерисовывает
- *   все AntD-компоненты во всём SPA.
- *
- * СТРУКТУРА:
- *   - algorithm — defaultAlgorithm (тёмный визуальный стиль приложения).
- *   - token     — базовые токены: цвета, шрифты, радиусы, тени, размеры контролов.
- *   - components — точечные настройки Layout, Card, Button, Input.
- */
+
 
 import { theme as antdTheme, type ThemeConfig } from "antd";
 
 export const theme: ThemeConfig = {
-  // Базовые токены: цветовая палитра, типографика и радиусы компонентов.
+  
   algorithm: [antdTheme.defaultAlgorithm],
   token: {
     fontFamily: '"Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -49,7 +32,7 @@ export const theme: ThemeConfig = {
     lineWidth: 1,
   },
   components: {
-    // Точечные переопределения отдельных виджетов поверх токенов.
+    
     Layout: {
       bodyBg: "transparent",
       headerBg: "transparent",

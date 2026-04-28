@@ -1,27 +1,4 @@
-/**
- * @fileoverview Карточка вакации для пользовательских и админских списков.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Универсальная карточка одной вакации: изображение, цена, заголовок,
- *   обрезанное описание, диапазон дат и набор кнопок-действий, который
- *   зависит от пропсов (показывать ли лайк, показывать ли админ-операции).
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Components. Один и тот же компонент используется в трёх разных
- *   местах: список Vacations (с лайком), Profile/Likes (с лайком), и
- *   AdminVacations (с кнопками Edit/Delete).
- *
- * ПРОПСЫ:
- *   - vacation         — данные карточки (обязательно).
- *   - showLikeButton   — показать кнопку лайка (для пользователя).
- *   - onLikeToggle     — обработчик переключения лайка.
- *   - showAdminActions — показать кнопки Edit/Delete (для админки).
- *   - onEdit/onDelete  — обработчики этих кнопок.
- *
- * ВАЖНО: в кнопках вызывается e.stopPropagation(), потому что вся карточка
- * кликабельна (открывает /vacations/:id), и без stop клик «протекал» бы
- * на карточку.
- */
+
 
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -35,7 +12,7 @@ import {
 } from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** Пропсы компонента VacationCard. */
+
 interface VacationCardProps {
   vacation: VacationWithLikes;
   showLikeButton?: boolean;
@@ -45,7 +22,7 @@ interface VacationCardProps {
   onDelete?: (id: number) => void;
 }
 
-/** Карточка вакации с опциональными кнопками лайка и админ-действий. */
+
 function VacationCard({
   vacation,
   showLikeButton = false,
@@ -57,7 +34,7 @@ function VacationCard({
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    // Открываем страницу деталей по клику на карточку.
+    
     navigate(getVacationDetailsRoute(vacation.id));
   };
 
@@ -130,7 +107,7 @@ function VacationCard({
         </Typography.Text>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {/* Пользовательское действие: поставить/снять лайк (с e.stopPropagation). */}
+          {}
           {showLikeButton && (
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
               <Button
@@ -150,7 +127,7 @@ function VacationCard({
               </Button>
             </motion.div>
           )}
-          {/* Админские действия: редактирование и удаление вакации. */}
+          {}
           {showAdminActions && (
             <>
               <motion.div whileHover={buttonHover} whileTap={buttonTap}>

@@ -1,19 +1,4 @@
-/**
- * @fileoverview Страница 404 (NotFound).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Fallback-страница, которую показывает router для любых URL,
- *   не подходящих ни под один из определённых маршрутов.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages. В AppRoutes привязана к маршруту `*`.
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - Показывает крупное «404» и текст-пояснение.
- *   - Кнопка возврата выбирается контекстно: если есть токен — ведёт на
- *     /vacations, иначе — на /login. Это сделано, чтобы пользователь
- *     попал на «логичную» для своего состояния страницу.
- */
+
 
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -23,9 +8,9 @@ import { AppState } from "../../redux/AppState";
 import { ROUTES } from "../../config/appConfig";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
-/** Страница 404 с контекстной ссылкой возврата (vacations или login). */
+
 function NotFound() {
-  // Контекстная ссылка возврата: авторизованного ведём на /vacations, иначе на /login.
+  
   const token = useSelector((state: AppState) => state.token);
 
   return (

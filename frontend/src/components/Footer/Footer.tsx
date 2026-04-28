@@ -1,15 +1,4 @@
-/**
- * @fileoverview Общий футер приложения.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Отрисовывает нижнюю часть страницы с брендом, ссылкой "About" и
- *   копирайтом. Использует общий стиль (glass surface) и Framer Motion
- *   для плавного появления.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Components. Подключается в Layout под Content и появляется на
- *   всех защищённых страницах SPA.
- */
+
 
 import { Layout, Typography } from "antd";
 import { NavLink } from "react-router-dom";
@@ -20,7 +9,7 @@ import { ROUTES } from "../../config/appConfig";
 const { Footer: AntFooter } = Layout;
 const { Text } = Typography;
 
-/** Футер: бренд, ссылка About и копирайт. */
+
 function Footer() {
   return (
     <AntFooter
@@ -35,7 +24,7 @@ function Footer() {
         backdropFilter: "blur(10px)",
       }}
     >
-      {/* Основной контент футера: бренд, ссылка About и атрибуция автора. */}
+      {}
       <motion.div
         variants={fadeIn}
         initial="hidden"

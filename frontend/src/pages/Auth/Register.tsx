@@ -1,22 +1,4 @@
-/**
- * @fileoverview Страница регистрации (Register).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Форма для создания нового аккаунта (firstName/lastName/email/password).
- *   После успешной регистрации сразу логинит пользователя — кладёт токен
- *   в localStorage и Redux, после чего редирект на /vacations.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages. Публичная страница (без ProtectedRoute).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - Управляет локальным state полей формы и сообщений об ошибках.
- *   - Валидирует ввод через Zod (registerSchema) до отправки на сервер.
- *   - При успехе: сохраняет токен и обновляет auth-состояние Redux.
- *   - Различает ошибки валидации (Zod → fieldErrors) и сетевые
- *     (Axios → общая ошибка вверху формы).
- *   - useEffect: если уже авторизован — редиректит на /vacations.
- */
+
 
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -36,7 +18,7 @@ import { ROUTES, TOKEN_STORAGE_KEY } from "../../config/appConfig";
 import backgroundImg from "../../assets/landing5.jpeg";
 import { buttonHover, buttonTap, fadeScale } from "../../ui/motion";
 
-/** Форма регистрации с Zod-валидацией и автологином после успеха. */
+
 function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -57,7 +39,7 @@ function Register() {
     setFieldErrors({});
     setError("");
     try {
-      // Валидация Zod-схемой до отправки запроса на API.
+      
       const data = registerSchema.parse({
         firstName,
         lastName,
@@ -67,7 +49,7 @@ function Register() {
       setLoading(true);
       const response = await authApi.register(data);
       const token = response.data.token;
-      // Сохраняем JWT и обновляем auth-состояние в Redux (автологин).
+      
       localStorage.setItem(TOKEN_STORAGE_KEY, token);
       dispatch(tokenSlice.actions.initToken(token));
       dispatch(userSlice.actions.initUser(jwtDecode(token)));

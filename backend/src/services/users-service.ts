@@ -1,26 +1,4 @@
-/**
- * @fileoverview Сервис управления профилем и аккаунтом пользователя.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Реализует операции пользователя над собственным аккаунтом:
- *     - получить профиль;
- *     - обновить профиль (имя/фамилия/email);
- *     - обновить аватар;
- *     - сменить пароль;
- *     - удалить аккаунт;
- *     - получить список лайкнутых вакаций.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Service. Используется users-controller. Все операции инкапсулируют
- *   доступ к БД и работу с файлами на диске (старые аватары удаляются).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - При смене email возвращает новый JWT — токен «носит» имя/email/role,
- *     поэтому после изменения профиля старый payload устаревает.
- *   - При обновлении аватара удаляет файл прежнего аватара с диска.
- *   - При удалении аккаунта чистит и БД-запись, и файл аватара.
- *   - Использует bcrypt.compare для проверки текущего пароля при смене.
- */
+
 
 import { db } from "../configs/db-config.ts";
 import { NotFoundError, UnauthorizedError, ConflictError } from "../errors/base-errors.ts";
@@ -37,7 +15,7 @@ import path from "path";
 
 class UserService {
 
-    /** Возвращает профиль пользователя по id. */
+    
     public async getProfile(userId: number): Promise<IUser> {
         const [rows] = await db.execute(
             "SELECT * FROM users WHERE id = ?", [userId]
@@ -48,9 +26,9 @@ class UserService {
     }
 
 
-    /** Обновляет профиль (firstName/lastName/email) и возвращает обновлённый JWT. */
+    
     public async updateProfile(userId: number, dto: UpdateProfileSchema): Promise<string> {
-        // Проверяем уникальность email, исключая самого пользователя.
+        
         const [existing] = await db.execute(
             "SELECT id FROM users WHERE email = ? AND id != ?",
             [dto.email, userId]
@@ -70,13 +48,13 @@ class UserService {
         );
         const raw = (rows as RawUser[])[0];
         if (!raw) throw new NotFoundError("User not found");
-        // Возвращаем новый токен, чтобы фронтенд получил актуальные claims профиля.
+        
         return generateToken(mapUser(raw));
     }
 
-    /** Сохраняет имя файла нового аватара и удаляет старый файл с диска. */
+    
     public async updateAvatar(userId: number, avatarName: string): Promise<string> {
-        // Сначала читаем имя предыдущего файла, чтобы не оставить его «осиротевшим» на диске.
+        
         const [oldRows] = await db.execute(
             "SELECT avatar FROM users WHERE id = ?", [userId]
         );
@@ -89,16 +67,16 @@ class UserService {
 
         if (existing?.avatar) {
             const oldPath = path.join(process.cwd(), "assets/images/avatars", existing.avatar);
-            await fs.unlink(oldPath).catch(() => {}); // Игнорируем ошибку, если файла уже нет.
+            await fs.unlink(oldPath).catch(() => {}); 
         }
 
         return avatarName;
     }
 
-    /** Меняет пароль после проверки текущего. */
+    
     public async changePassword(userId: number, dto: ChangePasswordSchema): Promise<void> {
-        // Сначала верифицируем текущий пароль — иначе любой, у кого есть токен,
-        // мог бы сменить пароль украденному аккаунту.
+        
+        
         const [rows] = await db.execute(
             "SELECT * FROM users WHERE id = ?", [userId]
         );
@@ -116,7 +94,7 @@ class UserService {
         );
     }
 
-    /** Удаляет аккаунт пользователя и связанный файл аватара. */
+    
     public async deleteAccount(userId: number): Promise<void> {
         const [avatarRows] = await db.execute(
             "SELECT avatar FROM users WHERE id = ?", [userId]
@@ -132,14 +110,14 @@ class UserService {
 
         if (existing?.avatar) {
             const oldPath = path.join(process.cwd(), "assets/images/avatars", existing.avatar);
-            await fs.unlink(oldPath).catch(() => {}); // Игнорируем, если файла уже нет.
+            await fs.unlink(oldPath).catch(() => {}); 
         }
     }
 
-    /** Возвращает список вакаций, лайкнутых пользователем (INNER JOIN на likes). */
+    
     public async getLikedVacations(userId: number): Promise<VacationWithLikes[]> {
-        // INNER JOIN на likes гарантирует, что в результат попадут только лайкнутые
-        // вакации; LEFT JOIN на ту же таблицу — для подсчёта общего числа лайков.
+        
+        
         const [rows] = await db.execute(`
             SELECT
                 v.id,

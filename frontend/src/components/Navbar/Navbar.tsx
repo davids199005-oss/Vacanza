@@ -1,23 +1,4 @@
-/**
- * @fileoverview Основная навигационная панель приложения.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Отрисовывает шапку для авторизованных пользователей: бренд, набор ссылок
- *   (Vacations, AI Recommendations, MCP Chat, и админские пункты для роли admin),
- *   аватар-кнопку профиля и кнопку выхода.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Components. Часть Layout-обёртки. Содержит логику logout:
- *   очищает Redux-state (user/token/vacations) и стирает токен из localStorage.
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - При маунте делает запрос GET /users/me, чтобы достать актуальный аватар
- *     (он не входит в JWT-payload).
- *   - Формирует список ссылок навигации, добавляя админские пункты для admin.
- *   - Реализует handleLogout: dispatch logoutUser/logoutToken/clearVacations,
- *     удаление токена и редирект на /login.
- *   - Стилизует активную ссылку (NavLink isActive) через getNavLinkStyle.
- */
+
 
 import { useState, useEffect, type CSSProperties } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -40,7 +21,7 @@ import { buttonHover, buttonTap, fadeIn } from "../../ui/motion";
 const { Header } = Layout;
 const { Text } = Typography;
 
-/** Navbar: ссылки навигации, аватар авторизованного пользователя и кнопка выхода. */
+
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,7 +30,7 @@ function Navbar() {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   useEffect(() => {
-    // При маунте: догружаем актуальный аватар, потому что в JWT его нет.
+    
     usersApi
       .getProfile()
       .then((res) => setAvatar(res.data.avatar))
@@ -57,7 +38,7 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    // Logout: очищаем auth-состояние и локальный кеш вакаций, удаляем токен из localStorage.
+    
     dispatch(userSlice.actions.logoutUser());
     dispatch(tokenSlice.actions.logoutToken());
     dispatch(vacationsSlice.actions.clearVacations());
@@ -65,7 +46,7 @@ function Navbar() {
     navigate(ROUTES.login);
   };
 
-  // Список ссылок: базовый набор для всех + дополнительные для admin.
+  
   const navLinks = [
     { to: ROUTES.vacations, label: "Vacations" },
     { to: ROUTES.recommendations, label: "AI Recommendations" },
@@ -78,7 +59,7 @@ function Navbar() {
       : []),
   ];
 
-  // Единая схема стилей активной/неактивной ссылки навигации.
+  
   const getNavLinkStyle = (isActive: boolean): CSSProperties => ({
     fontSize: 14,
     fontWeight: isActive ? 600 : 500,

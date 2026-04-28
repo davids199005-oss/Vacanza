@@ -1,22 +1,4 @@
-/**
- * @fileoverview Страница "О проекте" (About).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Информационная страница с описанием возможностей платформы и
- *   используемого технологического стека (React, Node.js, MySQL и т.д.).
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages. Доступна и авторизованным, и неавторизованным.
- *   В зависимости от наличия токена показывает Navbar (полный) или
- *   SimpleNavbar (минимальный).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - Хранит локальные массивы features (карточки возможностей) и
- *     techStack (карточки технологий).
- *   - Берёт token из Redux, чтобы выбрать вариант navbar.
- *   - Использует Framer Motion (staggerContainer/staggerItem) для
- *     последовательной анимации появления карточек.
- */
+
 
 import { Card, Typography, Row, Col } from "antd";
 import { useSelector } from "react-redux";
@@ -71,16 +53,16 @@ const techStack = [
   { name: "Zod", role: "Validation" },
 ];
 
-/** Страница About: карточки возможностей и стека. Navbar меняется по auth-состоянию. */
+
 function About() {
-  // Выбор шапки: по наличию токена определяем полный или упрощённый navbar.
+  
   const token = useSelector((state: AppState) => state.token);
 
   return (
     <div
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
-      {/* Навигация: авторизованные видят полный navbar, гости — упрощённый. */}
+      {}
       {token ? <Navbar /> : <SimpleNavbar />}
       <div
         style={{
@@ -117,7 +99,7 @@ function About() {
           </Typography.Text>
         </motion.div>
 
-        {/* Секция возможностей продукта. */}
+        {}
         <Typography.Title
           level={3}
           style={{
@@ -179,7 +161,7 @@ function About() {
           </Row>
         </motion.div>
 
-        {/* Секция используемого технологического стека. */}
+        {}
         <Typography.Title
           level={3}
           style={{

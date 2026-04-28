@@ -1,20 +1,4 @@
-/**
- * @fileoverview Админская страница управления вакациями.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Список всех вакаций для администратора с возможностью добавить
- *   новую (кнопка) и операциями редактирования/удаления на каждой карточке.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages → admin/. Защищена AdminRoute (требует роль admin).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - useEffect: при пустом кеше — GET /api/vacations и заполнение Redux.
- *   - handleEdit(id): переход на страницу VacationForm в режиме редактирования.
- *   - handleDelete(id): подтверждение через window.confirm → DELETE → удаление
- *     из Redux-кеша через slice.deleteVacation.
- *   - Использует VacationCard в режиме showAdminActions (без like-кнопки).
- */
+
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +13,7 @@ import { AxiosError } from "axios";
 import { ROUTES } from "../../../config/appConfig";
 import { buttonHover, buttonTap, fadeUp } from "../../../ui/motion";
 
-/** Админская страница: список, редактирование и удаление вакаций. */
+
 function AdminVacations() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +22,7 @@ function AdminVacations() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Грузим вакации только если кеш в Redux пустой.
+    
     if (vacations.length === 0) {
       vacationsApi
         .getAll()
@@ -50,10 +34,10 @@ function AdminVacations() {
     }
   }, [dispatch, vacations.length]);
 
-  // Действия над карточкой: переход к редактированию и удаление с подтверждением.
+  
   const handleEdit = (id: number) => navigate(`/admin/vacations/${id}/edit`);
   const handleDelete = async (id: number) => {
-    // Защита от случайного удаления — обязательное подтверждение.
+    
     if (!window.confirm("Are you sure you want to delete this vacation?"))
       return;
     try {

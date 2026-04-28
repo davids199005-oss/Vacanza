@@ -1,19 +1,4 @@
-/**
- * @fileoverview Страница AI-рекомендаций по выбранному направлению.
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Форма «введи направление → получи markdown-совет от LLM».
- *   Использует серверный эндпоинт /api/recommendations.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Pages (приватная страница). Аналогично McpChat, отличается тем,
- *   что на сервере используется обычный chat completion (без MCP-tools).
- *
- * ЧТО ИМЕННО ДЕЛАЕТ:
- *   - Управляет state: destination, recommendation, loading, error, fieldErrors.
- *   - На submit: валидирует Zod-схемой, делает запрос, рендерит markdown.
- *   - Различает ошибки валидации (Zod) и сетевые (Axios).
- */
+
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -26,7 +11,7 @@ import { AxiosError } from "axios";
 import ReactMarkdown from "react-markdown";
 import { buttonHover, buttonTap, fadeUp } from "../../ui/motion";
 
-/** Форма AI-рекомендаций: ввод направления и markdown-результат. */
+
 function Recommendations() {
     const [destination, setDestination] = useState("");
     const [recommendation, setRecommendation] = useState("");
@@ -38,7 +23,7 @@ function Recommendations() {
         e.preventDefault();
         setFieldErrors({}); setError(""); setRecommendation("");
         try {
-            // Валидация Zod-схемой до отправки запроса в API.
+            
             const data = recommendationSchema.parse({ destination });
             setLoading(true);
             const response = await recommendationsApi.generate(data.destination);
@@ -82,7 +67,7 @@ function Recommendations() {
 
             {error && <Alert type="error" title={error} style={{ marginBottom: 16 }} />}
 
-            {/* Результат: показываем markdown-рекомендацию после ответа API. */}
+            {}
             {recommendation && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
                     <Card className="glass-surface" style={{ paddingTop: 24, borderRadius: 16 }}>

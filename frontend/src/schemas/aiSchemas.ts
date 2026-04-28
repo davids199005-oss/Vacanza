@@ -1,20 +1,9 @@
-/**
- * @fileoverview Zod-схемы для AI-эндпоинтов (рекомендации и MCP-чат).
- *
- * НАЗНАЧЕНИЕ ФАЙЛА:
- *   Описывает клиентскую валидацию для двух AI-форм:
- *     - запрос рекомендации по направлению;
- *     - вопрос для MCP-чата.
- *
- * РОЛЬ В АРХИТЕКТУРЕ:
- *   Слой Schema (фронт). Дублирует серверные правила, чтобы пользователь
- *   видел ошибки сразу в UI и не делал лишний запрос на сервер.
- */
+
 
 import { z } from "zod";
 
 export const recommendationSchema = z.object({
-    // Валидируем направление (2..100 символов, тримим пробелы).
+    
     destination: z
         .string({ message: "Destination is required" })
         .trim()
@@ -23,7 +12,7 @@ export const recommendationSchema = z.object({
 });
 
 export const mcpQuestionSchema = z.object({
-    // Валидируем текст вопроса перед отправкой (2..500 символов).
+    
     question: z
         .string({ message: "Question is required" })
         .trim()
